@@ -7,11 +7,11 @@
     ],
     "allowJs": true,
     "skipLibCheck": true,
-    "strict": true,
+    "strict": true, // Sorun devam ederse geçici olarak false yapmayı deneyin
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "bundler",
+    "moduleResolution": "node", // "bundler" yerine "node" denenebilir
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
@@ -26,7 +26,8 @@
         "./*"
       ]
     },
-    "target": "ES2017"
+    "target": "esnext", // "ES2017" yerine "esnext"
+    "forceConsistentCasingInFileNames": true // Eklenmesi önerilir
   },
   "include": [
     "next-env.d.ts",
