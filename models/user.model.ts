@@ -1,9 +1,10 @@
 import mongoose, { Schema, model, models } from 'mongoose';
 
 export interface IUser {
+  userId: string;         // Yeni eklenen alan
   fullName: string;
-  firstName: string;      // Yeni eklenen alan
-  lastName: string;       // Yeni eklenen alan
+  firstName: string;
+  lastName: string;
   department: string;
   graduationYear: number;
   phone: string;
@@ -11,20 +12,25 @@ export interface IUser {
   certificateUrl: string;
   status: 'pending' | 'approved' | 'rejected';
   createdAt?: Date;
-  profilePhoto?: string;  // Önceden eklenmiş alan
+  profilePhoto?: string;
 }
 
 // Kullanıcı modeli tanımı
 const UserSchema = new Schema<IUser>({
+  userId: {
+    type: String,
+    required: true,
+    unique: true,         // Eğer kullanıcı id'si benzersiz olacaksa
+  },
   fullName: {
     type: String,
     required: true,
   },
-  firstName: {            // Yeni eklenen alan
+  firstName: {
     type: String,
     required: true,
   },
-  lastName: {             // Yeni eklenen alan
+  lastName: {
     type: String,
     required: true,
   },
