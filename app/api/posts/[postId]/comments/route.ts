@@ -2,7 +2,7 @@ import connectDB from "@/lib/db";
 import { Post } from "@/models/post.model";
 import { NextRequest, NextResponse } from "next/server";
 
-// Tüm yorumları çekmek için GET endpoint
+// İlgili postu döndüren GET endpoint (yorumlar kaldırıldı)
 export async function GET(
   req: NextRequest,
   { params }: { params: { postId: string } }
@@ -17,14 +17,8 @@ export async function GET(
       return NextResponse.json({ error: "Post not found." }, { status: 404 });
     }
 
-    // Post bulunduysa, yorumları populate et (tarihe göre azalan sıralama)
-    const comments = await post.populate({
-      path: "comments",
-      options: { sort: { createdAt: -1 } },
-    });
-
-    // Yorumları JSON formatında döndür
-    return NextResponse.json(comments);
+    // Yorumlar kaldırıldı, sadece postu JSON olarak döndür
+    return NextResponse.json(post);
   } catch (error) {
     console.error("GET endpoint hatası:", error);
     return NextResponse.json({ error: "An error occurred." }, { status: 500 });
