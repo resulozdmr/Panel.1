@@ -2,6 +2,8 @@ import mongoose, { Schema, model, models } from 'mongoose';
 
 export interface IUser {
   fullName: string;
+  firstName: string;      // Yeni eklenen alan
+  lastName: string;       // Yeni eklenen alan
   department: string;
   graduationYear: number;
   phone: string;
@@ -9,12 +11,20 @@ export interface IUser {
   certificateUrl: string;
   status: 'pending' | 'approved' | 'rejected';
   createdAt?: Date;
-  profilePhoto?: string; // Yeni eklenen alan (opsiyonel)
+  profilePhoto?: string;  // Önceden eklenmiş alan
 }
 
 // Kullanıcı modeli tanımı
 const UserSchema = new Schema<IUser>({
   fullName: {
+    type: String,
+    required: true,
+  },
+  firstName: {            // Yeni eklenen alan
+    type: String,
+    required: true,
+  },
+  lastName: {             // Yeni eklenen alan
     type: String,
     required: true,
   },
@@ -49,7 +59,7 @@ const UserSchema = new Schema<IUser>({
   },
   profilePhoto: {
     type: String,
-    default: '', // İsteğe bağlı olarak varsayılan değer verebilirsiniz
+    default: '', // İsteğe bağlı varsayılan değer
   },
 });
 
