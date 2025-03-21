@@ -9,6 +9,7 @@ export interface IUser {
   certificateUrl: string;
   status: 'pending' | 'approved' | 'rejected';
   createdAt?: Date;
+  profilePhoto?: string; // Yeni eklenen alan (opsiyonel)
 }
 
 // Kullanıcı modeli tanımı
@@ -45,6 +46,10 @@ const UserSchema = new Schema<IUser>({
   createdAt: {
     type: Date,
     default: Date.now,
+  },
+  profilePhoto: {
+    type: String,
+    default: '', // İsteğe bağlı olarak varsayılan değer verebilirsiniz
   },
 });
 
