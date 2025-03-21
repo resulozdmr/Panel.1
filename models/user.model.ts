@@ -1,7 +1,18 @@
 import mongoose, { Schema, model, models } from 'mongoose';
 
+export interface IUser {
+  fullName: string;
+  department: string;
+  graduationYear: number;
+  phone: string;
+  cvUrl: string;
+  certificateUrl: string;
+  status: 'pending' | 'approved' | 'rejected';
+  createdAt?: Date;
+}
+
 // Kullanıcı modeli tanımı
-const UserSchema = new Schema({
+const UserSchema = new Schema<IUser>({
   fullName: {
     type: String,
     required: true,
@@ -38,6 +49,6 @@ const UserSchema = new Schema({
 });
 
 // Eğer model daha önce oluşturulmuşsa tekrar oluşturma, yoksa yeni oluştur
-const User = models.User || model('User', UserSchema);
+const User = models.User || model<IUser>('User', UserSchema);
 
 export default User;
