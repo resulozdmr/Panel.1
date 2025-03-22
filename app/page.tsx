@@ -1,3 +1,4 @@
+
 import Feed from "@/components/Feed";
 import Education from "@/components/News";
 import News from "@/components/News";

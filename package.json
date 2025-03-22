@@ -2,12 +2,13 @@
   "name": "admin-drgulf.net",
   "version": "0.1.0",
   "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
+ "scripts": {
+  "dev": "next dev",
+  "build": "next build",
+  "start": "next start",
+  "lint": "next lint",
+  "deploy": "next build && next start"
+},
   "dependencies": {
     "@clerk/nextjs": "^6.12.6",
     "@radix-ui/react-avatar": "^1.0.4",
@@ -20,7 +21,7 @@
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.0",
-    "cloudinary": "^2.5.1",
+    "cloudinary": "^2.6.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.378.0",
     "md5": "^2.3.0",
