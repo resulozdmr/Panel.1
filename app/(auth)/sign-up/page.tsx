@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 import { useSignUp } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 const SignUpPage = () => {
   const { isLoaded, signUp, setActive } = useSignUp();
+  const router = useRouter();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -131,7 +133,8 @@ const SignUpPage = () => {
       if (completeSignUp.status === "complete") {
         // Kullanıcı başarıyla doğrulandı, aktif oturumu başlat:
         await setActive({ session: completeSignUp.createdSessionId });
-        // İsteğe bağlı: Kullanıcıyı yönlendirebilir veya başarı mesajı gösterebilirsiniz.
+        // Başarılı doğrulamadan sonra ana sayfaya yönlendir:
+        router.push("/");
       }
     } catch (error: any) {
       console.error("Verification error:", error);
@@ -264,23 +267,23 @@ const SignUpPage = () => {
                   onChange={handleChange}
                   required
                 >
-                    <option value="+90">🇹🇷 Turkey (+90)</option>
-                    <option value="+1">🇺🇸 USA (+1)</option>
-                    <option value="+44">🇬🇧 UK (+44)</option>
-                    <option value="+33">🇫🇷 France (+33)</option>
-                    <option value="+49">🇩🇪 Germany (+49)</option>
-                    <option value="+39">🇮🇹 Italy (+39)</option>
-                    <option value="+34">🇪🇸 Spain (+34)</option>
-                    <option value="+81">🇯🇵 Japan (+81)</option>
-                    <option value="+86">🇨🇳 China (+86)</option>
-                    <option value="+91">🇮🇳 India (+91)</option>
-                    <option value="+1">🇨🇦 Canada (+1)</option>
-                    <option value="+61">🇦🇺 Australia (+61)</option>
-                    <option value="+55">🇧🇷 Brazil (+55)</option>
-                    <option value="+7">🇷🇺 Russia (+7)</option>
-                    <option value="+82">🇰🇷 South Korea (+82)</option>
-                    <option value="+52">🇲🇽 Mexico (+52)</option>
-                    <option value="+971">🇦🇪 UAE (+971)</option>
+                  <option value="+90">🇹🇷 Turkey (+90)</option>
+                  <option value="+1">🇺🇸 USA (+1)</option>
+                  <option value="+44">🇬🇧 UK (+44)</option>
+                  <option value="+33">🇫🇷 France (+33)</option>
+                  <option value="+49">🇩🇪 Germany (+49)</option>
+                  <option value="+39">🇮🇹 Italy (+39)</option>
+                  <option value="+34">🇪🇸 Spain (+34)</option>
+                  <option value="+81">🇯🇵 Japan (+81)</option>
+                  <option value="+86">🇨🇳 China (+86)</option>
+                  <option value="+91">🇮🇳 India (+91)</option>
+                  <option value="+1">🇨🇦 Canada (+1)</option>
+                  <option value="+61">🇦🇺 Australia (+61)</option>
+                  <option value="+55">🇧🇷 Brazil (+55)</option>
+                  <option value="+7">🇷🇺 Russia (+7)</option>
+                  <option value="+82">🇰🇷 South Korea (+82)</option>
+                  <option value="+52">🇲🇽 Mexico (+52)</option>
+                  <option value="+971">🇦🇪 UAE (+971)</option>
                 </select>
                 <input
                   type="tel"
