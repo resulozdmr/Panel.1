@@ -1,6 +1,6 @@
 
 import Feed from "@/components/Feed";
-import Education from "@/components/News";
+import Education from "@/components/Education";
 import News from "@/components/News";
 import Sidebar from "@/components/Sidebar";
 import { currentUser } from "@clerk/nextjs/server";
