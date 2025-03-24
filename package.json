@@ -2,18 +2,19 @@
   "name": "admin-drgulf.net",
   "version": "0.1.0",
   "private": true,
- "scripts": {
-  "dev": "next dev",
-  "build": "next build",
-  "start": "next start",
-  "lint": "next lint",
-  "deploy": "next build && next start"
-},
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "deploy": "next build && next start"
+  },
   "dependencies": {
     "@clerk/nextjs": "^6.12.6",
     "@radix-ui/react-avatar": "^1.0.4",
     "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-slot": "^1.0.2",
+    "@supabase/supabase-js": "^2.49.1",
     "@zoom/videosdk": "^2.1.0",
     "@zoomus/websdk": "^2.18.3",
     "autoprefixer": "^10.4.20",
