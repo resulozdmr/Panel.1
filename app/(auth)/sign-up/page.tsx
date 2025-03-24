@@ -1,12 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import supabase from "@/lib/supabaseClient";
 
 export default function SignUpPage() {
   const router = useRouter();
-
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -24,13 +23,11 @@ export default function SignUpPage() {
     cvFile: null as File | null,
   });
 
-  const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -48,26 +45,63 @@ export default function SignUpPage() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const uploadFile = async (file: File, path: string) => {
+    const { error } = await supabase.storage.from("documents").upload(path, file);
+    if (error) throw error;
+
+    const { data } = supabase.storage.from("documents").getPublicUrl(path);
+    return data.publicUrl;
+  };
+
+  const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
     setMessage(null);
 
     try {
-      // Kullanıcı hesabı oluştur (sadece email + password + metadata ile)
-      const { data, error } = await supabase.auth.signUp({
-        email: formData.email,
+      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+        email: formData.email.toLowerCase(),
         password: formData.password,
       });
 
-      if (error) throw error;
+      if (signUpError || !signUpData.user) {
+        throw new Error(signUpError?.message || "Sign up failed.");
+      }
 
-      // Diğer form bilgilerini localStorage'ta geçici olarak tut
-      localStorage.setItem("pending_user", JSON.stringify(formData));
+      const userId = signUpData.user.id;
 
-      setMessage("Please check your email to verify your account.");
-      router.push("/verify-email"); // veya teşekkür sayfası
+      let cvUrl = null;
+      if (formData.cvFile) {
+        const path = `${userId}/cv_${Date.now()}.pdf`;
+        cvUrl = await uploadFile(formData.cvFile, path);
+      }
+
+      const certUrls = [];
+      for (const file of formData.certifications) {
+        const path = `${userId}/cert_${Date.now()}_${file.name}`;
+        const url = await uploadFile(file, path);
+        certUrls.push(url);
+      }
+
+      const { error: appError } = await supabase.from("applications").insert({
+        user_id: userId,
+        full_name: `${formData.firstName} ${formData.lastName}`,
+        phone_number: `${formData.countryCode}${formData.phoneNumber}`,
+        birthdate: formData.birthdate,
+        graduation_year: formData.graduationYear,
+        university: formData.university,
+        hospital: formData.hospital,
+        specialty: formData.specialty,
+        license_number: formData.licenseNumber,
+        cv_url: cvUrl,
+        certification_urls: certUrls,
+      });
+
+      if (appError) throw new Error(appError.message);
+
+      setMessage("Registration successful! Please verify your email.");
+      router.push("/verify-email");
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -105,7 +139,7 @@ export default function SignUpPage() {
       {error && <p className="text-red-600 mb-4 text-sm">{error}</p>}
       {message && <p className="text-green-600 mb-4 text-sm">{message}</p>}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSignUp} className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <input name="firstName" placeholder="First Name" required onChange={handleChange} className="border p-2 rounded-lg text-sm w-full" />
           <input name="lastName" placeholder="Last Name" required onChange={handleChange} className="border p-2 rounded-lg text-sm w-full" />
@@ -114,7 +148,7 @@ export default function SignUpPage() {
         <input name="password" type="password" placeholder="Password" required onChange={handleChange} className="border p-2 rounded-lg text-sm w-full" />
         <input name="birthdate" type="date" required onChange={handleChange} className="border p-2 rounded-lg text-sm w-full" />
 
-        <select name="graduationYear" required value={formData.graduationYear} onChange={handleChange} className="border p-2 rounded-lg text-sm w-full text-gray-500">
+        <select name="graduationYear" required value={formData.graduationYear} onChange={handleChange} className="w-full border p-2 rounded-lg text-sm text-gray-500">
           <option value="">Select Graduation Year</option>
           {Array.from({ length: 50 }, (_, i) => new Date().getFullYear() - i).map((year) => (
             <option key={year} value={year}>{year}</option>
@@ -127,13 +161,13 @@ export default function SignUpPage() {
               <option key={code} value={code}>{`${code} ${flag}`}</option>
             ))}
           </select>
-          <input name="phoneNumber" placeholder="Phone Number" onChange={handleChange} className="flex-1 border p-2 rounded-lg text-sm w-full" required />
+          <input name="phoneNumber" placeholder="Phone Number" onChange={handleChange} className="flex-1 border p-2 rounded-lg text-sm" required />
         </div>
 
-        <input name="university" placeholder="University" required onChange={handleChange} className="border p-2 rounded-lg text-sm w-full" />
-        <input name="hospital" placeholder="Hospital" required onChange={handleChange} className="border p-2 rounded-lg text-sm w-full" />
-        <input name="specialty" placeholder="Specialty" required onChange={handleChange} className="border p-2 rounded-lg text-sm w-full" />
-        <input name="licenseNumber" placeholder="License Number" required onChange={handleChange} className="border p-2 rounded-lg text-sm w-full" />
+        <input name="university" placeholder="University" required onChange={handleChange} className="w-full border p-2 rounded-lg text-sm" />
+        <input name="hospital" placeholder="Hospital" required onChange={handleChange} className="w-full border p-2 rounded-lg text-sm" />
+        <input name="specialty" placeholder="Specialty" required onChange={handleChange} className="w-full border p-2 rounded-lg text-sm" />
+        <input name="licenseNumber" placeholder="License Number" required onChange={handleChange} className="w-full border p-2 rounded-lg text-sm" />
 
         <label className="block font-semibold">Upload Certifications (PDFs)</label>
         <input type="file" name="certifications" multiple accept="application/pdf" onChange={handleFileChange} className="w-full text-sm" required />
@@ -141,7 +175,7 @@ export default function SignUpPage() {
         <label className="block font-semibold mt-2">Upload CV (PDF)</label>
         <input type="file" name="cvFile" accept="application/pdf" onChange={handleFileChange} className="w-full text-sm" required />
 
-        <button type="submit" disabled={loading} className="bg-blue-600 hover:bg-blue-700 transition text-white p-2 w-full rounded-lg font-semibold">
+        <button type="submit" disabled={loading} className="bg-blue-600 hover:bg-blue-700 text-white p-2 w-full rounded-lg font-semibold">
           {loading ? "Signing Up..." : "Sign Up"}
         </button>
       </form>
