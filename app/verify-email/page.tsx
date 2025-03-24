@@ -23,8 +23,8 @@ export default function VerifyEmailPage() {
         and confirm your email address to activate your account.
       </p>
       <p className="mt-4 text-sm text-gray-400">
-        You’ll be redirected to the login page shortly...
-      </p>
+  You&apos;ll be redirected to the login page shortly...
+</p>
     </div>
   );
 }
