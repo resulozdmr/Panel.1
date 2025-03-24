@@ -14,7 +14,7 @@ export default function SignUpPage() {
     birthdate: "",
     graduationYear: "",
     phoneNumber: "",
-    countryCode: "+90",
+    countryCode: "+971",
     university: "",
     hospital: "",
     specialty: "",
@@ -53,9 +53,7 @@ export default function SignUpPage() {
       .upload(path, file);
     if (error) throw error;
 
-    const { data } = supabase.storage
-      .from("documents")
-      .getPublicUrl(path);
+    const { data } = supabase.storage.from("documents").getPublicUrl(path);
     return data.publicUrl;
   };
 
@@ -66,7 +64,6 @@ export default function SignUpPage() {
     setMessage(null);
 
     try {
-      // 1. Kullanıcı oluştur
       const { data: signUpData, error: signUpError } =
         await supabase.auth.signUp({
           email: formData.email.toLowerCase(),
@@ -74,19 +71,17 @@ export default function SignUpPage() {
         });
 
       if (signUpError || !signUpData.user) {
-        throw new Error(signUpError?.message || "Kayıt başarısız oldu.");
+        throw new Error(signUpError?.message || "Registration failed.");
       }
 
       const userId = signUpData.user.id;
 
-      // 2. CV dosyasını yükle
       let cvUrl = null;
       if (formData.cvFile) {
         const path = `${userId}/cv_${Date.now()}.pdf`;
         cvUrl = await uploadFile(formData.cvFile, path);
       }
 
-      // 3. Sertifikaları yükle
       const certUrls = [];
       for (const file of formData.certifications) {
         const path = `${userId}/cert_${Date.now()}_${file.name}`;
@@ -94,7 +89,6 @@ export default function SignUpPage() {
         certUrls.push(url);
       }
 
-      // 4. Kullanıcı bilgilerini kaydet
       const { error: userError } = await supabase.from("users").insert({
         user_id: userId,
         full_name: `${formData.firstName} ${formData.lastName}`,
@@ -110,7 +104,6 @@ export default function SignUpPage() {
 
       if (userError) throw new Error(userError.message);
 
-      // 5. Sertifika verilerini documents tablosuna yaz
       for (const certUrl of certUrls) {
         await supabase.from("documents").insert({
           user_id: userId,
@@ -119,7 +112,7 @@ export default function SignUpPage() {
         });
       }
 
-      setMessage("Başarılı kayıt! Lütfen e-posta adresinizi doğrulayın.");
+      setMessage("Registration successful! Please verify your email.");
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -127,9 +120,32 @@ export default function SignUpPage() {
     }
   };
 
+  const countryOptions = [
+    { code: "+971", label: "🇦🇪" },
+    { code: "+90", label: "🇹🇷" },
+    { code: "+1", label: "🇺🇸" },
+    { code: "+44", label: "🇬🇧" },
+    { code: "+49", label: "🇩🇪" },
+    { code: "+33", label: "🇫🇷" },
+    { code: "+39", label: "🇮🇹" },
+    { code: "+34", label: "🇪🇸" },
+    { code: "+61", label: "🇦🇺" },
+    { code: "+81", label: "🇯🇵" },
+    { code: "+82", label: "🇰🇷" },
+    { code: "+86", label: "🇨🇳" },
+    { code: "+91", label: "🇮🇳" },
+    { code: "+7", label: "🇷🇺" },
+    { code: "+966", label: "🇸🇦" },
+    { code: "+20", label: "🇪🇬" },
+    { code: "+964", label: "🇮🇶" },
+  ];
+
   return (
     <div className="max-w-xl mx-auto mt-10 bg-white p-6 shadow rounded">
-      <h2 className="text-2xl font-bold mb-6">Kayıt Ol</h2>
+      <img src="/logo.png" alt="DrGulf Logo" className="h-12 mx-auto mb-2" />
+      <h2 className="text-xl text-center font-bold mb-1">
+        Join our network of healthcare professionals and explore new opportunities in the Gulf region.
+      </h2>
 
       {error && <p className="text-red-600 mb-4">{error}</p>}
       {message && <p className="text-green-600 mb-4">{message}</p>}
@@ -151,28 +167,27 @@ export default function SignUpPage() {
         </select>
 
         <div className="flex gap-2">
-          <select name="countryCode" value={formData.countryCode} onChange={handleChange} className="w-24 border p-2">
-            <option value="+90">+90 🇹🇷</option>
-            <option value="+1">+1 🇺🇸</option>
-            <option value="+44">+44 🇬🇧</option>
-            {/* İstediğin kadar ülke ekleyebilirsin */}
+          <select name="countryCode" value={formData.countryCode} onChange={handleChange} className="w-28 border p-2">
+            {countryOptions.map((opt) => (
+              <option key={opt.code} value={opt.code}>{opt.code} {opt.label}</option>
+            ))}
           </select>
-          <input name="phoneNumber" placeholder="Phone Number" onChange={handleChange} className="flex-1 border p-2" required />
+          <input name="phoneNumber" placeholder="Phone Number" required onChange={handleChange} className="flex-1 border p-2" />
         </div>
 
-        <input name="university" placeholder="University" onChange={handleChange} className="w-full border p-2" />
-        <input name="hospital" placeholder="Hospital" onChange={handleChange} className="w-full border p-2" />
-        <input name="specialty" placeholder="Specialty" onChange={handleChange} className="w-full border p-2" />
-        <input name="licenseNumber" placeholder="License Number" onChange={handleChange} className="w-full border p-2" />
+        <input name="university" placeholder="University" required onChange={handleChange} className="w-full border p-2" />
+        <input name="hospital" placeholder="Hospital" required onChange={handleChange} className="w-full border p-2" />
+        <input name="specialty" placeholder="Specialty" required onChange={handleChange} className="w-full border p-2" />
+        <input name="licenseNumber" placeholder="License Number" required onChange={handleChange} className="w-full border p-2" />
 
         <label className="block font-semibold">Upload Certifications (PDFs)</label>
-        <input type="file" name="certifications" multiple accept="application/pdf" onChange={handleFileChange} className="w-full" />
+        <input type="file" name="certifications" multiple required accept="application/pdf" onChange={handleFileChange} className="w-full" />
 
         <label className="block font-semibold mt-2">Upload CV (PDF)</label>
-        <input type="file" name="cvFile" accept="application/pdf" onChange={handleFileChange} className="w-full" />
+        <input type="file" name="cvFile" accept="application/pdf" required onChange={handleFileChange} className="w-full" />
 
         <button type="submit" disabled={loading} className="bg-blue-600 text-white p-2 w-full rounded">
-          {loading ? "Kayıt Yapılıyor..." : "Kayıt Ol"}
+          {loading ? "Submitting..." : "Sign Up"}
         </button>
       </form>
     </div>
