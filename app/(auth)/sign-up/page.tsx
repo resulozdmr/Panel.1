@@ -1,27 +1,51 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import supabase from "@/lib/supabaseClient";
 
-export default function SignUpStepOne() {
+export default function SignUpPage() {
   const router = useRouter();
+
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
     email: "",
     password: "",
-    phone: "",
-    countryCode: "+971",
+    firstName: "",
+    lastName: "",
+    birthdate: "",
+    graduationYear: "",
+    phoneNumber: "",
+    countryCode: "+90",
+    university: "",
+    hospital: "",
+    specialty: "",
+    licenseNumber: "",
+    certifications: [] as File[],
+    cvFile: null as File | null,
   });
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, files } = e.target;
+    if (!files) return;
+    if (name === "certifications") {
+      setFormData((prev) => ({
+        ...prev,
+        certifications: Array.from(files),
+      }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: files[0] }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -31,21 +55,19 @@ export default function SignUpStepOne() {
     setMessage(null);
 
     try {
+      // Kullanıcı hesabı oluştur (sadece email + password + metadata ile)
       const { data, error } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
-        options: {
-          data: {
-            full_name: `${formData.firstName} ${formData.lastName}`,
-            phone: `${formData.countryCode}${formData.phone}`,
-          },
-        },
       });
 
       if (error) throw error;
 
-      setMessage("Sign up successful! Please check your email to verify your account.");
-      router.push("/verify-email");
+      // Diğer form bilgilerini localStorage'ta geçici olarak tut
+      localStorage.setItem("pending_user", JSON.stringify(formData));
+
+      setMessage("Please check your email to verify your account.");
+      router.push("/verify-email"); // veya teşekkür sayfası
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -74,14 +96,11 @@ export default function SignUpStepOne() {
   ];
 
   return (
-    <div className="max-w-md mx-auto mt-10 bg-white p-6 shadow rounded-lg">
+    <div className="max-w-xl mx-auto mt-10 bg-white p-6 shadow rounded-lg">
       <img src="/logo.png" alt="DrGulf Logo" className="mx-auto mb-4 h-20" />
-      <h2 className="text-center text-lg font-semibold mb-2">
-        Create your account
-      </h2>
-      <p className="text-center text-sm text-gray-600 mb-6">
+      <h2 className="text-center text-lg font-semibold mb-6">
         Join our network of healthcare professionals and explore new opportunities in the Gulf region.
-      </p>
+      </h2>
 
       {error && <p className="text-red-600 mb-4 text-sm">{error}</p>}
       {message && <p className="text-green-600 mb-4 text-sm">{message}</p>}
@@ -93,23 +112,37 @@ export default function SignUpStepOne() {
         </div>
         <input name="email" type="email" placeholder="Email" required onChange={handleChange} className="border p-2 rounded-lg text-sm w-full" />
         <input name="password" type="password" placeholder="Password" required onChange={handleChange} className="border p-2 rounded-lg text-sm w-full" />
+        <input name="birthdate" type="date" required onChange={handleChange} className="border p-2 rounded-lg text-sm w-full" />
+
+        <select name="graduationYear" required value={formData.graduationYear} onChange={handleChange} className="border p-2 rounded-lg text-sm w-full text-gray-500">
+          <option value="">Select Graduation Year</option>
+          {Array.from({ length: 50 }, (_, i) => new Date().getFullYear() - i).map((year) => (
+            <option key={year} value={year}>{year}</option>
+          ))}
+        </select>
 
         <div className="flex gap-2">
-          <select
-            name="countryCode"
-            value={formData.countryCode}
-            onChange={handleChange}
-            className="border p-2 rounded-lg text-sm"
-          >
+          <select name="countryCode" value={formData.countryCode} onChange={handleChange} className="w-28 border p-2 rounded-lg text-sm">
             {countryCodes.map(({ code, flag }) => (
-              <option key={code} value={code}>{`${flag} ${code}`}</option>
+              <option key={code} value={code}>{`${code} ${flag}`}</option>
             ))}
           </select>
-          <input name="phone" placeholder="Phone Number" required onChange={handleChange} className="border p-2 rounded-lg text-sm flex-1" />
+          <input name="phoneNumber" placeholder="Phone Number" onChange={handleChange} className="flex-1 border p-2 rounded-lg text-sm w-full" required />
         </div>
 
-        <button type="submit" disabled={loading} className="bg-blue-600 hover:bg-blue-700 text-white p-2 w-full rounded-lg font-semibold">
-          {loading ? "Creating Account..." : "Sign Up"}
+        <input name="university" placeholder="University" required onChange={handleChange} className="border p-2 rounded-lg text-sm w-full" />
+        <input name="hospital" placeholder="Hospital" required onChange={handleChange} className="border p-2 rounded-lg text-sm w-full" />
+        <input name="specialty" placeholder="Specialty" required onChange={handleChange} className="border p-2 rounded-lg text-sm w-full" />
+        <input name="licenseNumber" placeholder="License Number" required onChange={handleChange} className="border p-2 rounded-lg text-sm w-full" />
+
+        <label className="block font-semibold">Upload Certifications (PDFs)</label>
+        <input type="file" name="certifications" multiple accept="application/pdf" onChange={handleFileChange} className="w-full text-sm" required />
+
+        <label className="block font-semibold mt-2">Upload CV (PDF)</label>
+        <input type="file" name="cvFile" accept="application/pdf" onChange={handleFileChange} className="w-full text-sm" required />
+
+        <button type="submit" disabled={loading} className="bg-blue-600 hover:bg-blue-700 transition text-white p-2 w-full rounded-lg font-semibold">
+          {loading ? "Signing Up..." : "Sign Up"}
         </button>
       </form>
     </div>
