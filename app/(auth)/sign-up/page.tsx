@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import supabase from "@/lib/supabaseClient";
-import supabaseAdmin from "@/lib/supabaseadmin";
+import supabaseAdmin from "@/lib/supabaseAdmin";
+
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -111,6 +112,8 @@ export default function SignUpPage() {
       }
 
       setMessage("Successfully signed up! Please verify your email.");
+      router.push("/verify-email");
+
     } catch (err: any) {
       setError(err.message);
     } finally {
