@@ -25,7 +25,7 @@ export default function SignInPage() {
     if (error) {
       setError(error.message);
     } else {
-      router.push("/dashboard"); // Giriş başarılıysa yönlendirme
+      router.push("/dashboard");
     }
 
     setLoading(false);
@@ -35,12 +35,17 @@ export default function SignInPage() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-gray-100 to-gray-200">
       <div className="bg-white p-10 shadow-xl rounded-lg w-full max-w-lg">
         {/* Logo */}
-        <div className="flex justify-center mb-8">
-          <Image src="/logo.png" alt="Dr. Gulf Logo" width={150} height={150} />
+        <div className="flex justify-center mb-4">
+          <Image src="/logo.png" alt="Dr. Gulf Logo" width={120} height={120} />
         </div>
 
-        {/* Başlık */}
-        <h2 className="text-center text-2xl font-bold mb-6">Sign in to your account</h2>
+        {/* Giriş Başlığı */}
+        <h1 className="text-center text-3xl font-extrabold text-gray-800 mb-2">Welcome to DrGulf</h1>
+
+        {/* Alt Başlık */}
+        <h2 className="text-center text-lg font-semibold text-gray-600 mb-6">
+          Sign in to your account
+        </h2>
 
         {/* Hata Mesajı */}
         {error && <p className="text-red-600 text-sm mb-4 text-center">{error}</p>}
