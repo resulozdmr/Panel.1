@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import supabase from "@/lib/supabaseClient";
+import supabaseAdmin from "@/lib/supabaseadmin";
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -86,7 +87,7 @@ export default function SignUpPage() {
         certUrls.push(url);
       }
 
-      const { error: userError } = await supabase.from("users").insert({
+      const { error: userError } = await supabaseAdmin.from("users").insert({
         user_id: userId,
         full_name: `${formData.firstName} ${formData.lastName}`,
         phone_number: `${formData.countryCode}${formData.phoneNumber}`,
