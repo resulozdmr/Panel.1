@@ -58,56 +58,33 @@ export default function SignUpPage() {
     setLoading(true);
     setError(null);
     setMessage(null);
-
+  
     try {
       const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
         email: formData.email.toLowerCase(),
         password: formData.password,
+        options: {
+          emailRedirectTo: "https://doctor.drgulf.net/verify-email", // 📩 Mail geldikten sonra yönlendirme buraya
+        },
       });
-
-      if (signUpError || !signUpData.user) {
-        throw new Error(signUpError?.message || "Sign up failed.");
+  
+      if (signUpError) {
+        throw new Error(signUpError.message);
       }
-
-      const userId = signUpData.user.id;
-
-      let cvUrl = null;
-      if (formData.cvFile) {
-        const path = `${userId}/cv_${Date.now()}.pdf`;
-        cvUrl = await uploadFile(formData.cvFile, path);
-      }
-
-      const certUrls = [];
-      for (const file of formData.certifications) {
-        const path = `${userId}/cert_${Date.now()}_${file.name}`;
-        const url = await uploadFile(file, path);
-        certUrls.push(url);
-      }
-
-      const { error: appError } = await supabase.from("applications").insert({
-        user_id: userId,
-        full_name: `${formData.firstName} ${formData.lastName}`,
-        phone_number: `${formData.countryCode}${formData.phoneNumber}`,
-        birthdate: formData.birthdate,
-        graduation_year: formData.graduationYear,
-        university: formData.university,
-        hospital: formData.hospital,
-        specialty: formData.specialty,
-        license_number: formData.licenseNumber,
-        cv_url: cvUrl,
-        certification_urls: certUrls,
-      });
-
-      if (appError) throw new Error(appError.message);
-
+  
+      // signUpData.user null olabilir çünkü e-posta doğrulama aktif
+      // Ama biz yine de kullanıcıya verify sayfasını göstereceğiz
+  
       setMessage("Registration successful! Please verify your email.");
       router.push("/verify-email");
+  
     } catch (err: any) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
   };
+  
 
   const countryCodes = [
     { code: "+90", flag: "🇹🇷" },
