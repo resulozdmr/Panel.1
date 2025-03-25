@@ -9,43 +9,57 @@ import { ZoomIn, GraduationCap, Calendar } from "lucide-react";
 
 export default function DashboardPage() {
   const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState<boolean>(true);
   const supabase = createBrowserSupabaseClient();
 
   useEffect(() => {
-    const getUser = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-
-      const metadata = session?.user?.user_metadata ?? {};
-      setUser({
-        id: session?.user?.id || "guest",
-        email: session?.user?.email || "guest@drgulf.net",
-        user_metadata: {
-          firstName: metadata.firstName || "Guest",
-          lastName: metadata.lastName || "User",
-          username: metadata.username || "guestuser",
-        },
-      });
-    };
-
+    async function getUser() {
+      try {
+        const {
+          data: { session },
+          error,
+        } = await supabase.auth.getSession();
+        if (error) {
+          console.error("Error fetching session:", error);
+          setLoading(false);
+          return;
+        }
+        const metadata = session?.user?.user_metadata || {};
+        setUser({
+          id: session?.user?.id || "guest",
+          email: session?.user?.email || "guest@drgulf.net",
+          user_metadata: {
+            firstName: metadata.firstName || "Guest",
+            lastName: metadata.lastName || "User",
+            username: metadata.username || "guestuser",
+          },
+        });
+      } catch (err) {
+        console.error("Error in getUser:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
     getUser();
-  }, []);
+  }, [supabase]);
 
-  if (!user) return <div className="p-10">Loading...</div>;
+  if (loading) return <div className="p-10">Loading...</div>;
+  if (!user) return <div className="p-10">No user session found.</div>;
 
   return (
     <div className="pt-20 min-h-screen overflow-y-auto bg-[#F4F2EE] relative">
-      {/* Aynı layout */}
       <div className="max-w-6xl mx-auto px-4 pb-10 flex flex-col lg:flex-row lg:gap-8">
+        {/* Sol Sidebar */}
         <div className="hidden lg:block lg:w-1/4 mb-4 lg:mb-0">
           <Sidebar user={user} />
         </div>
 
+        {/* Orta alan - Feed */}
         <div className="w-full lg:w-2/4 mb-4 lg:mb-0">
           <Feed user={user} />
         </div>
 
+        {/* Sağ alan */}
         <div className="hidden lg:block lg:w-1/4">
           <div className="bg-white border border-gray-200 rounded-lg shadow-md p-4 flex flex-col gap-6">
             <div className="flex flex-col items-center gap-4">
