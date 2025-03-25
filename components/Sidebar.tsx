@@ -53,13 +53,15 @@ const Sidebar = async ({ user }: Props) => {
             <h1 className="font-bold hover:underline cursor-pointer">
               {user.user_metadata.firstName} {user.user_metadata.lastName}
             </h1>
-            <p className="text-xs text-gray-600">@{user.user_metadata.username}</p>
+            <p className="text-xs text-gray-600">
+              @{user.user_metadata.username}
+            </p>
           </div>
         </div>
       </div>
 
       {/* Contact Section */}
-      <div className="border-t border-gray-300 p-4 text-center">
+      <div className="border-t border-gray-300 p-4 text-right pr-4">
         <h3 className="font-bold text-xl text-gray-800 mb-4">Contact Us</h3>
         <div className="space-y-4 text-sm text-gray-700">
           <div>
