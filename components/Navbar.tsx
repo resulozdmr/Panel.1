@@ -3,14 +3,16 @@
 import { useEffect, useState, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import NavItems from "./NavItems";
 import supabase from "@/lib/supabaseClient";
-import Link from "next/link";
 
 const Navbar = () => {
   const pathname = usePathname();
   const router = useRouter();
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const getSession = async () => {
@@ -23,6 +25,28 @@ const Navbar = () => {
     };
     getSession();
   }, [router]);
+
+  // Dış tıklamaları dinleyerek dropdown'u kapatma
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push("/sign-in");
+  };
 
   // Navbar gizli sayfalar için
   if (
@@ -55,18 +79,37 @@ const Navbar = () => {
             <NavItems />
           </div>
 
-          {/* Sağ Kısım - Artık kullanıcı profil dropdown'u yerine de logomuzu gösteriyoruz */}
+          {/* Sağ Kısım - Profil İkonu */}
           {userEmail && (
-            <div className="flex items-center">
-              <Link href="/dashboard">
+            <div className="relative" ref={dropdownRef}>
+              <button
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+                className="focus:outline-none"
+              >
                 <Image
-                  src="/logo.png"
-                  alt="Logo"
+                  src="/logo-2.png"
+                  alt="Profile Icon"
                   width={36}
                   height={36}
-                  className="cursor-pointer"
+                  className="cursor-pointer rounded-full"
                 />
-              </Link>
+              </button>
+              {dropdownOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg z-50">
+                  <Link
+                    href="/profile-settings"
+                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                  >
+                    Profile Settings
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full text-left block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>
