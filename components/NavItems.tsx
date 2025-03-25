@@ -19,7 +19,7 @@ const openZoomApp = () => {
 
 const navItems: NAVITEMS[] = [
   {
-    src: "/",
+    src: "/dashboard",
     icon: <Home />,
     text: "Home",
   },

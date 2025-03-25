@@ -1,32 +1,16 @@
-
-import Feed from "@/components/Feed";
-import Education from "@/components/Education";
-import News from "@/components/News";
-import Sidebar from "@/components/Sidebar";
-import { currentUser } from "@clerk/nextjs/server";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 export default async function HomePage() {
-  // Kullanıcıyı Clerk'ten çek
-  const user = await currentUser();
+  const supabase = createServerComponentClient({ cookies });
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
-  // Eğer kullanıcı giriş yapmamışsa, giriş sayfasına yönlendir
-  if (!user) {
+  if (!session) {
     redirect("/sign-in");
   }
 
-  return (
-    <div className="pt-20">
-      <div className="max-w-6xl mx-auto flex justify-between gap-8">
-        {/* Sidebar */}
-        <Sidebar user={user} />
-        {/* Feed */}
-        <Feed user={user} />
-        {/* News */}
-        <News />
-                {/* News */}
-                <Education />
-      </div>
-    </div>
-  );
+  redirect("/dashboard");
 }
