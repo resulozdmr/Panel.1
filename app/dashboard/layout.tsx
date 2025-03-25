@@ -13,7 +13,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       {/* Diğer layout bileşenleri eklemek istersen buraya (örn. Topbar) */}
 
       {/* Sayfa içeriği */}
-      <main className="pt-20">
+      <main className="pt-8">
         {children}
       </main>
 
