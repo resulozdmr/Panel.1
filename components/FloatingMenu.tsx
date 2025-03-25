@@ -23,14 +23,21 @@ export default function FloatingMenu() {
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
         className="relative bg-white p-3 shadow-xl rounded-l-xl w-16 flex flex-col gap-4 items-center"
       >
-        <Link href="/zoom">
-          <Image src="/zoom.png" alt="Zoom" width={40} height={40} />
-        </Link>
+        <a
+        href="zoommtg://zoom.us/join?confno=123456789&pwd=abc123"
+        onClick={(e) => {
+            setTimeout(() => {
+            window.location.href = "https://zoom.us/j/123456789?pwd=abc123";
+            }, 500);
+        }}
+        >
+        <Image src="/zoom.png" alt="Zoom" width={40} height={40} />
+        </a>
         <Link href="/education">
-          <Image src="/FileText.png" alt="Education" width={37} height={37} />
+          <Image src="/FileText.png" alt="Education" width={35} height={35} />
         </Link>
         <Link href="/calendar">
-          <Image src="/calendar.png" alt="Calendar" width={37} height={37} />
+          <Image src="/calendar.png" alt="Calendar" width={35} height={35} />
         </Link>
 
         {/* Menü açıkken kapanma butonu */}
