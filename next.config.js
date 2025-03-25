@@ -7,10 +7,13 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'res.cloudinary.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'img.youtube.com',
+      },
     ],
   },
   experimental: {
-    // appDir: true, // Desteklenmiyorsa bu satırı kaldırın.
     serverActions: {
       bodySizeLimit: '20mb',
     },

@@ -27,7 +27,7 @@ const videoLinks = [
 
 export default function Education() {
   return (
-    <div className="ml-4 mt-4">
+    <div className="ml-4 mt-4 hidden lg:block">
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-md font-medium">Education</h2>
@@ -35,28 +35,32 @@ export default function Education() {
       </div>
 
       {/* Videos Section */}
-      <div className="space-y-3">
+      <div className="space-y-4">
         {videoLinks.map((video, index) => (
           <a
             key={index}
             href={video.link}
             target="_blank"
             rel="noopener noreferrer"
-            className="block bg-gray-50 rounded-md overflow-hidden hover:shadow-md transition"
+            className="flex items-center bg-gray-50 hover:bg-gray-100 rounded-md shadow-sm transition p-2 gap-3"
           >
-            <Image
-              src={video.thumbnail}
-              alt={video.title}
-              width={500}
-              height={280}
-              className="w-full h-auto object-cover"
-            />
+            <div className="relative w-[80px] h-[60px] flex-shrink-0 rounded overflow-hidden">
+              <Image
+                src={video.thumbnail}
+                alt={video.title}
+                fill
+                className="object-cover rounded-md"
+              />
+            </div>
+            <p className="text-sm text-blue-600 font-medium hover:underline">
+              {video.title}
+            </p>
           </a>
         ))}
       </div>
 
       {/* Google Calendar Section */}
-      <div className="mt-4">
+      <div className="mt-6">
         <iframe
           src="https://calendar.google.com/calendar/embed?src=a4a907818fbe02b4790eca7264d32122d87145955b8bb235d39b6f00ee3b7091%40group.calendar.google.com&ctz=Europe%2FIstanbul"
           style={{ border: 0 }}
