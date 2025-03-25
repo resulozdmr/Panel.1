@@ -21,7 +21,7 @@ export function PostDialog({
   open,
   src,
 }: {
-  setOpen: any;
+  setOpen: (open: boolean) => void;
   open: boolean;
   src: string;
 }) {
@@ -55,7 +55,7 @@ export function PostDialog({
       await createPostAction(inputText, selectedFile);
       toast.success("Post created successfully!");
     } catch (error) {
-      console.log("Error occurred:", error);
+      console.error("Error occurred:", error);
       toast.error("Failed to create post.");
     }
 
@@ -65,14 +65,12 @@ export function PostDialog({
   };
 
   return (
-    <Dialog open={open}>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent
-        onInteractOutside={() => setOpen(false)}
         className="sm:max-w-[425px] bg-white rounded-md shadow-lg"
       >
         <DialogHeader>
           <DialogTitle className="flex gap-2 items-center">
-            {/* Logo görseli */}
             <Image
               src="/logo.png"
               alt="DrGulf Logo"
@@ -87,7 +85,6 @@ export function PostDialog({
           </DialogTitle>
         </DialogHeader>
 
-        {/* Form */}
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -101,7 +98,6 @@ export function PostDialog({
           }}
         >
           <div className="flex flex-col">
-            {/* Textarea */}
             <Textarea
               id="name"
               name="inputText"
@@ -111,7 +107,6 @@ export function PostDialog({
               placeholder="Type your message here."
             />
 
-            {/* Görsel önizleme */}
             {selectedFile && (
               <div className="my-4">
                 <Image
@@ -140,7 +135,6 @@ export function PostDialog({
           </DialogFooter>
         </form>
 
-        {/* Medya Ekleme Butonu */}
         <Button
           className="gap-2 mt-2"
           onClick={() => inputRef?.current?.click()}
