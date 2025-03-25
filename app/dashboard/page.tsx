@@ -1,9 +1,14 @@
 import Feed from "@/components/Feed";
 import Education from "@/components/Education";
 import Sidebar from "@/components/Sidebar";
+// Eğer bir Calendar bileşeniniz varsa import edin.
+// import Calendar from "@/components/Calendar";
+
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
-import { ZoomIn, GraduationCap, CalendarDays } from "lucide-react";
+
+import Image from "next/image";
+import Link from "next/link";
 
 export default async function DashboardPage() {
   const supabase = createServerComponentClient({ cookies });
@@ -11,7 +16,7 @@ export default async function DashboardPage() {
     data: { session },
   } = await supabase.auth.getSession();
 
-  // Örnek kullanıcı verisi
+  // Kullanıcı bilgisi (test amaçlı)
   const user = {
     id: session?.user?.id || "guest",
     email: session?.user?.email || "guest@drgulf.net",
@@ -24,57 +29,83 @@ export default async function DashboardPage() {
 
   return (
     <div className="pt-20 min-h-screen bg-[#F4F2EE]">
-      {/* Ana container: Masaüstü görünümde 3 kolonlu yapı */}
-      <div className="max-w-6xl mx-auto px-4 pb-10 flex flex-col lg:flex-row gap-8">
+      {/* 3 kolon yapısı (lg: masaüstü) */}
+      <div className="max-w-7xl mx-auto px-4 pb-10 flex flex-col lg:flex-row gap-8">
         
-        {/* Sol Sidebar (yalnızca lg ve üzeri ekranlarda) */}
-        <div className="hidden lg:block lg:w-1/4">
+        {/* SOL SIDEBAR (lg: block, mobil: hidden) */}
+        <div className="hidden lg:block lg:w-1/5">
           <Sidebar user={user} />
         </div>
 
-        {/* Orta alan - Feed (her ekranda görünür) */}
-        <div className="w-full lg:w-2/4">
+        {/* ORTA ALAN - FEED (her boyutta görünür) */}
+        <div className="w-full lg:w-2/5">
           <Feed user={user} />
         </div>
 
-        {/* Sağ Sidebar (yalnızca lg ve üzeri ekranlarda) */}
-        <div className="hidden lg:block lg:w-1/4">
+        {/* SAĞ ALAN (lg: block, mobil: hidden) */}
+        <div className="hidden lg:block lg:w-2/5">
           <div className="bg-white border border-gray-200 rounded-lg shadow-md p-4 flex flex-col gap-6">
-            {/* Örnek butonlar */}
-            <div className="flex items-center justify-between">
-              <button className="flex items-center space-x-2 text-sm text-blue-500">
-                <ZoomIn size={16} />
-                <span>Zoom</span>
-              </button>
-              <button className="flex items-center space-x-2 text-sm text-blue-500">
-                <GraduationCap size={16} />
-                <span>Education</span>
-              </button>
+            {/* Dikey ikon menüsü */}
+            <div className="flex flex-col items-start gap-4">
+              {/* Zoom */}
+              <Link
+                href="/zoom"
+                className="flex items-center gap-2 hover:bg-gray-100 p-2 rounded-md"
+              >
+                <Image
+                  src="/zoom.png"
+                  alt="Zoom Logo"
+                  width={24}
+                  height={24}
+                  className="cursor-pointer"
+                />
+                <span className="text-sm font-semibold">Zoom</span>
+              </Link>
+
+              {/* Education */}
+              <Link
+                href="/education"
+                className="flex items-center gap-2 hover:bg-gray-100 p-2 rounded-md"
+              >
+                <Image
+                  src="/FileText.png"
+                  alt="Education Logo"
+                  width={24}
+                  height={24}
+                  className="cursor-pointer"
+                />
+                <span className="text-sm font-semibold">Education</span>
+              </Link>
+
+              {/* Calendar */}
+              <Link
+                href="/calendar"
+                className="flex items-center gap-2 hover:bg-gray-100 p-2 rounded-md"
+              >
+                <Image
+                  src="/calendar.png"
+                  alt="Calendar Logo"
+                  width={24}
+                  height={24}
+                  className="cursor-pointer"
+                />
+                <span className="text-sm font-semibold">Calendar</span>
+              </Link>
             </div>
-            
-            {/* Education bileşeni */}
+
+            {/* Education Bileşeni */}
             <Education />
+
+            {/* Calendar Bileşeni - Örnek */}
+            {/* Kendi takvim bileşeniniz varsa burada kullanabilirsiniz */}
+            <div className="border border-gray-300 rounded p-4 text-center">
+              <h2 className="font-bold mb-2">Takvim Bileşeni</h2>
+              <p className="text-sm text-gray-500">
+                Burada takvim görünecek...
+              </p>
+            </div>
           </div>
         </div>
-      </div>
-
-      {/* 
-        Mobil ekranlar için sağda sabit (fixed) bir dikey menü:
-        lg:hidden -> lg (1024px) üzeri ekranlarda gizle demektir.
-      */}
-      <div className="fixed right-0 top-1/4 transform -translate-y-1/2 lg:hidden flex flex-col gap-4 bg-white p-4 border border-gray-200 rounded-l-lg shadow-md">
-        <button className="flex items-center space-x-2 text-blue-500">
-          <ZoomIn size={20} />
-          <span className="text-sm">Zoom</span>
-        </button>
-        <button className="flex items-center space-x-2 text-blue-500">
-          <GraduationCap size={20} />
-          <span className="text-sm">Education</span>
-        </button>
-        <button className="flex items-center space-x-2 text-blue-500">
-          <CalendarDays size={20} />
-          <span className="text-sm">Calendar</span>
-        </button>
       </div>
     </div>
   );

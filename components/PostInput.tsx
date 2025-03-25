@@ -26,6 +26,18 @@ const PostInput = ({ user }: { user: any }) => {
           <PostDialog setOpen={setOpen} open={open} src={user?.imageUrl} />
         </div>
       </div>
+
+      {/* 
+        ESKİ Mobil İkon Bloğu (md:hidden) 
+        Artık dashboard.tsx içinde sabit menü var, 
+        bu nedenle kaldırıyoruz veya isterseniz yorum yapabilirsiniz:
+      
+        <div className="md:hidden">
+          <div className="bg-white p-2 border border-gray-300 rounded-md shadow-sm flex flex-col items-center gap-2">
+            ...
+          </div>
+        </div>
+      */}
     </div>
   );
 };
