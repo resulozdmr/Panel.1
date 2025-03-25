@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, Suspense } from "react";
-import { createBrowserSupabaseClient } from "@supabase/auth-helpers-nextjs";
+import { createPagesBrowserClient } from "@supabase/auth-helpers-nextjs";
 import Feed from "@/components/Feed";
 import Education from "@/components/Education";
 import Sidebar from "@/components/Sidebar";
@@ -9,7 +9,7 @@ import { ZoomIn, GraduationCap, Calendar } from "lucide-react";
 
 export default function DashboardPage() {
   const [user, setUser] = useState<any>(null);
-  const supabase = createBrowserSupabaseClient();
+  const supabase = createPagesBrowserClient();
 
   useEffect(() => {
     const getUser = async () => {
