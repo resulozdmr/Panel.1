@@ -157,28 +157,53 @@ export default function ProfileForm({ userId }: Props) {
   if (loading) return <p>Loading...</p>;
 
   return (
-    <form onSubmit={handleSave} className="space-y-4">
-      {message && <p className="text-green-600 text-sm">{message}</p>}
+    <form onSubmit={handleSave} className="space-y-6">
+      {formData.full_name && (
+        <h1 className="text-xl font-bold text-center">Welcome, {formData.full_name}</h1>
+      )}
+
+      {message && <p className="text-green-600 text-sm text-center">{message}</p>}
 
       {/* Profil Resmi */}
       <div className="flex items-center gap-4">
-        {profileImageUrl && (
+        {profileImageUrl ? (
           <img src={profileImageUrl} alt="Profile" className="w-16 h-16 rounded-full object-cover" />
+        ) : (
+          <img src="/logo-2.png" alt="Default" className="w-16 h-16 rounded-full object-cover" />
         )}
         <input type="file" accept="image/*" onChange={handleProfileImageChange} />
       </div>
 
-      {/* Temel Bilgiler */}
-      {Object.entries(formData).map(([key, value]) => (
-        <input
-          key={key}
-          name={key}
-          placeholder={key.replace("_", " ")}
-          value={value}
-          onChange={handleChange}
-          className="w-full border p-2 rounded-lg"
-        />
-      ))}
+      {/* Kişisel Bilgiler */}
+      <h2 className="text-lg font-semibold">Personal Info</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {Object.entries(formData).filter(([key]) => ["full_name", "birthdate", "phone_number"].includes(key)).map(([key, value]) => (
+          <input
+            key={key}
+            name={key}
+            type={key === "birthdate" ? "date" : "text"}
+            placeholder={key.replace("_", " ")}
+            value={value}
+            onChange={handleChange}
+            className="w-full border p-2 rounded-lg"
+          />
+        ))}
+      </div>
+
+      {/* Mesleki Bilgiler */}
+      <h2 className="text-lg font-semibold mt-6">Professional Info</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {Object.entries(formData).filter(([key]) => !["full_name", "birthdate", "phone_number"].includes(key)).map(([key, value]) => (
+          <input
+            key={key}
+            name={key}
+            placeholder={key.replace("_", " ")}
+            value={value}
+            onChange={handleChange}
+            className="w-full border p-2 rounded-lg"
+          />
+        ))}
+      </div>
 
       {/* CV */}
       <div>
@@ -186,7 +211,7 @@ export default function ProfileForm({ userId }: Props) {
         <input type="file" accept="application/pdf" onChange={handleCvChange} className="w-full mt-2" />
         {cvUrl && (
           <p className="text-sm mt-1">
-            Current CV:{" "}
+            Current CV: {" "}
             <a href={cvUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
               View
             </a>
@@ -206,9 +231,12 @@ export default function ProfileForm({ userId }: Props) {
         <ul className="list-disc pl-5 text-sm text-blue-700 space-y-1">
           {certifications.map((url, index) => (
             <li key={index} className="flex justify-between items-center">
-              <a href={url} target="_blank" rel="noopener noreferrer" className="truncate max-w-[80%]">
-                Certificate {index + 1}
-              </a>
+              <div className="flex items-center gap-2 max-w-[80%]">
+                <img src="/pdf-icon.png" alt="PDF" className="w-4 h-4" />
+                <a href={url} target="_blank" rel="noopener noreferrer" className="truncate">
+                  Certificate {index + 1}
+                </a>
+              </div>
               <button
                 type="button"
                 onClick={() => handleCertDelete(url)}

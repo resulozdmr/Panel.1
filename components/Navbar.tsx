@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import NavItems from "./NavItems";
@@ -11,6 +11,8 @@ const Navbar = () => {
   const pathname = usePathname();
   const router = useRouter();
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const getSession = async () => {
@@ -18,14 +20,27 @@ const Navbar = () => {
       if (data?.session?.user) {
         setUserEmail(data.session.user.email ?? null);
       } else {
-        router.push("/sign-in"); // Giriş yapılmamışsa yönlendir
+        router.push("/sign-in");
       }
     };
-
     getSession();
   }, [router]);
 
-  // Navbar gizlensin mi?
+  // Dışarı tıklanınca dropdown'ı kapat
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setShowDropdown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   if (
     pathname === "/sign-in" ||
     pathname === "/sign-up" ||
@@ -55,17 +70,40 @@ const Navbar = () => {
             <NavItems />
           </div>
 
-          {/* Kullanıcı Bilgisi */}
+          {/* Kullanıcı Bilgisi + Açılır Menü */}
           {userEmail && (
-            <div className="flex flex-col items-center text-xs text-black font-semibold">
-              <Image
-                src="/avatar-placeholder.png" // Kullanıcıdan alacaksan supabase'den çekebilirsin
-                alt="Profile"
-                width={36}
-                height={36}
-                className="rounded-full"
-              />
+            <div
+              className="relative flex flex-col items-center text-xs text-black font-semibold cursor-pointer"
+              onClick={() => setShowDropdown(!showDropdown)}
+              ref={dropdownRef}
+            >
+                <Image
+                  src="/logo-2.png"
+                  alt="Profile"
+                  width={36}
+                  height={36}
+                  className="rounded-full"
+                />
+
+              
               <span className="mt-1">Profile</span>
+
+              {showDropdown && (
+                <div className="absolute top-12 right-0 bg-white shadow-md rounded-md p-2 text-sm w-40 z-50">
+                  <Link href="/profile">
+                    <div className="py-2 px-3 hover:bg-gray-100 rounded">Settings</div>
+                  </Link>
+                  <button
+                    onClick={async () => {
+                      await supabase.auth.signOut();
+                      router.push("/sign-in");
+                    }}
+                    className="py-2 px-3 text-red-500 hover:bg-gray-100 w-full text-left rounded"
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>
