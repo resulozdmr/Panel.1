@@ -12,22 +12,27 @@ const Navbar = () => {
   const router = useRouter();
   const [userEmail, setUserEmail] = useState<string | null>(null);
 
-  // Navbar gizlensin mi?
-  if (pathname === "/sign-in" || pathname === "/sign-up" || pathname === "/verify-email") {
-    return null;
-  }
-
   useEffect(() => {
     const getSession = async () => {
-      const { data, error } = await supabase.auth.getSession();
+      const { data } = await supabase.auth.getSession();
       if (data?.session?.user) {
         setUserEmail(data.session.user.email ?? null);
       } else {
         router.push("/sign-in"); // Giriş yapılmamışsa yönlendir
       }
     };
+
     getSession();
   }, [router]);
+
+  // Navbar gizlensin mi?
+  if (
+    pathname === "/sign-in" ||
+    pathname === "/sign-up" ||
+    pathname === "/verify-email"
+  ) {
+    return null;
+  }
 
   return (
     <div className="fixed w-full bg-white z-50 shadow-sm">
@@ -54,7 +59,7 @@ const Navbar = () => {
           {userEmail && (
             <div className="flex flex-col items-center text-xs text-black font-semibold">
               <Image
-                src="/avatar-placeholder.png" // İstersen kullanıcıdan al
+                src="/avatar-placeholder.png" // Kullanıcıdan alacaksan supabase'den çekebilirsin
                 alt="Profile"
                 width={36}
                 height={36}
