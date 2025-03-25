@@ -87,7 +87,7 @@ export default function ProfileForm({ userId }: Props) {
     if (uploadResult.error) throw uploadResult.error;
 
     const { data } = supabase.storage.from("documents").getPublicUrl(path);
-    if (!data?.publicUrl) throw new Error("Dosya URL'si alınamadı");
+    if (!data?.publicUrl) throw new Error("Failed to get file URL");
     return data.publicUrl;
   };
 
@@ -147,27 +147,27 @@ export default function ProfileForm({ userId }: Props) {
         .eq("user_id", userId);
 
       if (error) {
-        setMessage("❌ Bir hata oluştu.");
+        setMessage("❌ An error occurred.");
       } else {
         setCertifications(updatedCerts);
         setCvUrl(newCvUrl || null);
         setProfileImageUrl(newProfileImageUrl || null);
-        setMessage("✅ Bilgiler başarıyla güncellendi.");
+        setMessage("✅ Profile updated successfully.");
       }
     } catch (err) {
-      console.error("Yükleme hatası:", err);
-      setMessage("❌ Dosya yüklenirken bir hata oluştu.");
+      console.error("Upload error:", err);
+      setMessage("❌ File upload failed.");
     } finally {
       setSaving(false);
     }
   };
 
-  if (loading) return <p className="text-center mt-10">Yükleniyor...</p>;
+  if (loading) return <p className="text-center mt-10">Loading...</p>;
 
   return (
     <form onSubmit={handleSave} className="space-y-6 max-w-3xl mx-auto px-4 py-6 bg-white shadow-md rounded-lg">
       {formData.full_name && (
-        <h1 className="text-2xl font-bold text-center">Hoş geldiniz, {formData.full_name}</h1>
+        <h1 className="text-2xl font-bold text-center">Welcome, {formData.full_name}</h1>
       )}
 
       {message && (
@@ -176,7 +176,7 @@ export default function ProfileForm({ userId }: Props) {
         </div>
       )}
 
-      {/* Profil Resmi */}
+      {/* Profile Image */}
       <div className="flex items-center gap-4">
         {profileImage ? (
           <img
@@ -196,8 +196,8 @@ export default function ProfileForm({ userId }: Props) {
         <input type="file" accept="image/*" onChange={handleProfileImageChange} />
       </div>
 
-      {/* Kişisel Bilgiler */}
-      <h2 className="text-lg font-semibold">Kişisel Bilgiler</h2>
+      {/* Personal Info */}
+      <h2 className="text-lg font-semibold">Personal Information</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {["full_name", "phone_number", "birthdate"].map((key) => (
           <input
@@ -212,8 +212,8 @@ export default function ProfileForm({ userId }: Props) {
         ))}
       </div>
 
-      {/* Mesleki Bilgiler */}
-      <h2 className="text-lg font-semibold mt-6">Mesleki Bilgiler</h2>
+      {/* Professional Info */}
+      <h2 className="text-lg font-semibold mt-6">Professional Information</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {["graduation_year", "university", "hospital", "specialty", "license_number"].map((key) => (
           <input
@@ -229,27 +229,26 @@ export default function ProfileForm({ userId }: Props) {
 
       {/* CV */}
       <div>
-        <label className="font-semibold">CV (PDF)</label>
+        <label className="font-semibold">Upload CV (PDF)</label>
         <input type="file" accept="application/pdf" onChange={handleCvChange} className="w-full mt-2" />
         {cvUrl && (
           <p className="text-sm mt-1">
             <a href={cvUrl} target="_blank" className="text-blue-700 underline">
-              Mevcut CV'yi Görüntüle
+              View current CV
             </a>
           </p>
         )}
       </div>
 
-      {/* Yeni Sertifikalar */}
+      {/* Certificates */}
       <div>
-        <label className="font-semibold">Yeni Sertifikalar (PDF)</label>
+        <label className="font-semibold">Upload New Certificates (PDF)</label>
         <input type="file" accept="application/pdf" multiple onChange={handleCertFileChange} className="w-full mt-2" />
       </div>
 
-      {/* Sertifika Listesi */}
       {certifications.length > 0 && (
         <div>
-          <label className="font-semibold block mb-2">Yüklenen Sertifikalar</label>
+          <label className="font-semibold block mb-2">Uploaded Certificates</label>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {certifications.map((url, index) => (
               <div
@@ -257,14 +256,14 @@ export default function ProfileForm({ userId }: Props) {
                 className="flex items-center justify-between border rounded p-2 shadow-sm bg-gray-50"
               >
                 <a href={url} target="_blank" className="text-blue-600 truncate max-w-[80%] text-sm">
-                  Sertifika {index + 1}
+                  Certificate {index + 1}
                 </a>
                 <button
                   type="button"
                   onClick={() => handleCertDelete(url)}
                   className="text-red-500 text-xs hover:underline"
                 >
-                  Sil
+                  Delete
                 </button>
               </div>
             ))}
@@ -272,13 +271,12 @@ export default function ProfileForm({ userId }: Props) {
         </div>
       )}
 
-      {/* Kaydet Butonu */}
       <button
         type="submit"
         disabled={saving}
         className="bg-blue-600 hover:bg-blue-700 text-white py-2 w-full rounded font-semibold transition"
       >
-        {saving ? "Kaydediliyor..." : "Değişiklikleri Kaydet"}
+        {saving ? "Saving..." : "Save Changes"}
       </button>
     </form>
   );
