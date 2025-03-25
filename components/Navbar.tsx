@@ -91,7 +91,7 @@ const Navbar = () => {
               {showDropdown && (
                 <div className="absolute top-12 right-0 bg-white shadow-md rounded-md p-2 text-sm w-40 z-50">
                   <Link href="/profile">
-                    <div className="py-2 px-3 hover:bg-gray-100 rounded">Settings</div>
+                    <div className="py-2 px-3 hover:bg-gray-100 rounded">Profile Settings</div>
                   </Link>
                   <button
                     onClick={async () => {

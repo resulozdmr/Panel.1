@@ -79,9 +79,15 @@ export default function ProfileForm({ userId }: Props) {
   };
 
   const uploadFile = async (file: File, path: string): Promise<string> => {
-    const { error } = await supabase.storage.from("documents").upload(path, file, { upsert: true });
-    if (error) throw error;
+    const uploadResult = await supabase.storage.from("documents").upload(path, file, {
+      cacheControl: "3600",
+      upsert: true,
+    });
+
+    if (uploadResult.error) throw uploadResult.error;
+
     const { data } = supabase.storage.from("documents").getPublicUrl(path);
+    if (!data?.publicUrl) throw new Error("Dosya URL'si alınamadı");
     return data.publicUrl;
   };
 
@@ -107,6 +113,7 @@ export default function ProfileForm({ userId }: Props) {
 
     try {
       let uploadedCerts: string[] = [];
+
       if (newCertFiles) {
         for (const file of Array.from(newCertFiles)) {
           const path = `${userId}/cert_${Date.now()}_${file.name}`;
@@ -123,7 +130,7 @@ export default function ProfileForm({ userId }: Props) {
 
       let newProfileImageUrl = profileImageUrl;
       if (profileImage) {
-        const path = `${userId}/avatar_${Date.now()}.${profileImage.name.split('.').pop()}`;
+        const path = `${userId}/avatar_${Date.now()}.${profileImage.name.split(".").pop()}`;
         newProfileImageUrl = await uploadFile(profileImage, path);
       }
 
@@ -140,34 +147,49 @@ export default function ProfileForm({ userId }: Props) {
         .eq("user_id", userId);
 
       if (error) {
-        setMessage("Hata oluştu.");
+        setMessage("❌ Bir hata oluştu.");
       } else {
         setCertifications(updatedCerts);
         setCvUrl(newCvUrl || null);
         setProfileImageUrl(newProfileImageUrl || null);
-        setMessage("Bilgiler başarıyla güncellendi.");
+        setMessage("✅ Bilgiler başarıyla güncellendi.");
       }
     } catch (err) {
-      setMessage("Dosya yüklenirken hata oluştu.");
+      console.error("Yükleme hatası:", err);
+      setMessage("❌ Dosya yüklenirken bir hata oluştu.");
     } finally {
       setSaving(false);
     }
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <p className="text-center mt-10">Yükleniyor...</p>;
 
   return (
-    <form onSubmit={handleSave} className="space-y-6">
+    <form onSubmit={handleSave} className="space-y-6 max-w-3xl mx-auto px-4 py-6 bg-white shadow-md rounded-lg">
       {formData.full_name && (
-        <h1 className="text-xl font-bold text-center">Welcome, {formData.full_name}</h1>
+        <h1 className="text-2xl font-bold text-center">Hoş geldiniz, {formData.full_name}</h1>
       )}
 
-      {message && <p className="text-green-600 text-sm text-center">{message}</p>}
+      {message && (
+        <div className="text-center text-sm font-medium text-green-700 bg-green-100 py-2 rounded">
+          {message}
+        </div>
+      )}
 
       {/* Profil Resmi */}
       <div className="flex items-center gap-4">
-        {profileImageUrl ? (
-          <img src={profileImageUrl} alt="Profile" className="w-16 h-16 rounded-full object-cover" />
+        {profileImage ? (
+          <img
+            src={URL.createObjectURL(profileImage)}
+            alt="Preview"
+            className="w-16 h-16 rounded-full object-cover"
+          />
+        ) : profileImageUrl ? (
+          <img
+            src={profileImageUrl}
+            alt="Profile"
+            className="w-16 h-16 rounded-full object-cover"
+          />
         ) : (
           <img src="/logo-2.png" alt="Default" className="w-16 h-16 rounded-full object-cover" />
         )}
@@ -175,87 +197,88 @@ export default function ProfileForm({ userId }: Props) {
       </div>
 
       {/* Kişisel Bilgiler */}
-      <h2 className="text-lg font-semibold">Personal Info</h2>
+      <h2 className="text-lg font-semibold">Kişisel Bilgiler</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {Object.entries(formData).filter(([key]) => ["full_name", "birthdate", "phone_number"].includes(key)).map(([key, value]) => (
+        {["full_name", "phone_number", "birthdate"].map((key) => (
           <input
             key={key}
             name={key}
             type={key === "birthdate" ? "date" : "text"}
             placeholder={key.replace("_", " ")}
-            value={value}
+            value={(formData as any)[key]}
             onChange={handleChange}
-            className="w-full border p-2 rounded-lg"
+            className="w-full border border-gray-300 p-2 rounded-md"
           />
         ))}
       </div>
 
       {/* Mesleki Bilgiler */}
-      <h2 className="text-lg font-semibold mt-6">Professional Info</h2>
+      <h2 className="text-lg font-semibold mt-6">Mesleki Bilgiler</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {Object.entries(formData).filter(([key]) => !["full_name", "birthdate", "phone_number"].includes(key)).map(([key, value]) => (
+        {["graduation_year", "university", "hospital", "specialty", "license_number"].map((key) => (
           <input
             key={key}
             name={key}
             placeholder={key.replace("_", " ")}
-            value={value}
+            value={(formData as any)[key]}
             onChange={handleChange}
-            className="w-full border p-2 rounded-lg"
+            className="w-full border border-gray-300 p-2 rounded-md"
           />
         ))}
       </div>
 
       {/* CV */}
       <div>
-        <label className="font-semibold">Upload CV (PDF)</label>
+        <label className="font-semibold">CV (PDF)</label>
         <input type="file" accept="application/pdf" onChange={handleCvChange} className="w-full mt-2" />
         {cvUrl && (
           <p className="text-sm mt-1">
-            Current CV: {" "}
-            <a href={cvUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
-              View
+            <a href={cvUrl} target="_blank" className="text-blue-700 underline">
+              Mevcut CV'yi Görüntüle
             </a>
           </p>
         )}
       </div>
 
-      {/* Yeni Sertifika Yükle */}
+      {/* Yeni Sertifikalar */}
       <div>
-        <label className="font-semibold">Upload New Certificates (PDF)</label>
+        <label className="font-semibold">Yeni Sertifikalar (PDF)</label>
         <input type="file" accept="application/pdf" multiple onChange={handleCertFileChange} className="w-full mt-2" />
       </div>
 
-      {/* Mevcut Sertifikalar */}
-      <div>
-        <label className="font-semibold">Uploaded Certificates:</label>
-        <ul className="list-disc pl-5 text-sm text-blue-700 space-y-1">
-          {certifications.map((url, index) => (
-            <li key={index} className="flex justify-between items-center">
-              <div className="flex items-center gap-2 max-w-[80%]">
-                <img src="/pdf-icon.png" alt="PDF" className="w-4 h-4" />
-                <a href={url} target="_blank" rel="noopener noreferrer" className="truncate">
-                  Certificate {index + 1}
-                </a>
-              </div>
-              <button
-                type="button"
-                onClick={() => handleCertDelete(url)}
-                className="text-red-500 text-xs hover:underline"
+      {/* Sertifika Listesi */}
+      {certifications.length > 0 && (
+        <div>
+          <label className="font-semibold block mb-2">Yüklenen Sertifikalar</label>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {certifications.map((url, index) => (
+              <div
+                key={index}
+                className="flex items-center justify-between border rounded p-2 shadow-sm bg-gray-50"
               >
-                Delete
-              </button>
-            </li>
-          ))}
-        </ul>
-      </div>
+                <a href={url} target="_blank" className="text-blue-600 truncate max-w-[80%] text-sm">
+                  Sertifika {index + 1}
+                </a>
+                <button
+                  type="button"
+                  onClick={() => handleCertDelete(url)}
+                  className="text-red-500 text-xs hover:underline"
+                >
+                  Sil
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
-      {/* Kaydet */}
+      {/* Kaydet Butonu */}
       <button
         type="submit"
         disabled={saving}
-        className="bg-blue-600 hover:bg-blue-700 text-white p-2 w-full rounded-lg font-semibold"
+        className="bg-blue-600 hover:bg-blue-700 text-white py-2 w-full rounded font-semibold transition"
       >
-        {saving ? "Saving..." : "Save Changes"}
+        {saving ? "Kaydediliyor..." : "Değişiklikleri Kaydet"}
       </button>
     </form>
   );
