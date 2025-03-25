@@ -30,7 +30,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="pt-20 min-h-screen bg-[#F4F2EE] relative">
-      {/* 3 kolon (lg: masaüstü) */}
+      {/* Masaüstü için 3 kolonlu yapı */}
       <div className="max-w-7xl mx-auto px-4 pb-10 flex flex-col lg:flex-row gap-8">
         
         {/* SOL SIDEBAR (sadece lg'de görünür) */}
@@ -44,14 +44,9 @@ export default async function DashboardPage() {
         </div>
 
         {/* SAĞ ALAN - Education + Calendar (sadece lg'de) */}
-        <div className="hidden lg:block lg:w-2/5">
+        <div className="hidden lg:block lg:w-1/4 ml-auto">
           <div className="bg-white border border-gray-200 rounded-lg shadow-md p-4 flex flex-col gap-6">
-            {/* 
-              Burada masaüstü için Zoom/Education/Calendar ikonlarını kaldırıyoruz. 
-              Sadece Education + (varsa) Calendar gösterelim.
-            */}
-
-            {/* Education Bileşeni */}
+            {/* Masaüstünde sağ bölümde artık ikon menüsü kaldırıldı */}
             <Education />
 
             {/* Calendar Bileşeni (varsa) */}
@@ -63,18 +58,15 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      {/* 
-        MOBİLDE SAĞDA SABİT İKON MENÜSÜ:
-        block lg:hidden -> mobilde görünsün, masaüstünde gizlensin
-      */}
-      <div className="fixed right-0 top-1/3 transform -translate-y-1/2 bg-white p-2 shadow-md rounded-l-lg block lg:hidden flex flex-col items-center gap-4">
+      {/* MOBİLDE: Sağdaki sabit ikon menüsü */}
+      <div className="fixed right-4 top-1/3 transform -translate-y-1/2 bg-white p-3 shadow-lg rounded-l-lg block lg:hidden flex flex-col items-center gap-4">
         {/* Zoom */}
         <Link href="/zoom">
           <Image
             src="/zoom.png"
             alt="Zoom Logo"
-            width={30}
-            height={30}
+            width={40}
+            height={40}
             className="cursor-pointer"
           />
         </Link>
@@ -83,8 +75,8 @@ export default async function DashboardPage() {
           <Image
             src="/FileText.png"
             alt="Education Logo"
-            width={30}
-            height={30}
+            width={40}
+            height={40}
             className="cursor-pointer"
           />
         </Link>
@@ -93,8 +85,8 @@ export default async function DashboardPage() {
           <Image
             src="/calendar.png"
             alt="Calendar Logo"
-            width={30}
-            height={30}
+            width={40}
+            height={40}
             className="cursor-pointer"
           />
         </Link>
