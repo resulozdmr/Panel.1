@@ -1,8 +1,6 @@
 import Feed from "@/components/Feed";
 import Sidebar from "@/components/Sidebar";
 import Education from "@/components/Education";
-import Calendar from "@/components/Calendar";
-// Eğer bir Calendar bileşeniniz varsa import edin
 
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
