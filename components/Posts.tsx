@@ -17,4 +17,4 @@ const Posts = ({ posts }: { posts: IPostDocument[] }) => {
   )
 }
 
-export default Posts
+export default Posts;
