@@ -32,9 +32,8 @@ export default async function DashboardPage() {
         {/* Orta alan - Feed */}
         <Feed user={user} />
 
-        {/* Sağ alan - News + Education */}
-        <div className="flex flex-col gap-6">
-          <News />
+        {/* Sağ Sidebar */}
+        <div className="hidden md:block w-[20%]">
           <Education />
         </div>
       </div>
