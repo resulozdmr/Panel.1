@@ -24,7 +24,7 @@ export default function FloatingMenu() {
         className="relative bg-white p-3 shadow-xl rounded-l-xl w-16 flex flex-col gap-4 items-center"
       >
         <Link href="/zoom">
-          <Image src="/zoom.png" alt="Zoom" width={28} height={28} />
+          <Image src="/zoom.png" alt="Zoom" width={32} height={32} />
         </Link>
         <Link href="/education">
           <Image src="/FileText.png" alt="Education" width={28} height={28} />
