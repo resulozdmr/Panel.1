@@ -10,7 +10,6 @@ interface FeedProps {
 }
 
 const Feed = async ({ user }: FeedProps) => {
-  // Sunucu tarafı veri çekme örneği
   const userData = JSON.parse(JSON.stringify(user));
   const posts = await getAllPosts();
 

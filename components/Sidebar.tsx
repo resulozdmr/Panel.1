@@ -26,78 +26,75 @@ const Sidebar = async ({ user }: Props) => {
   }
 
   return (
-    <div className="w-full border border-gray-300 bg-white rounded-lg">
+    <div className="w-full border border-gray-300 bg-white rounded-lg overflow-hidden">
       {/* Banner */}
-      <div className="flex flex-col items-center">
-        <Link href="/">
-          <div className="w-full h-auto overflow-hidden cursor-pointer">
-            <Image
-              src="/banner.png"
-              alt="Banner"
-              layout="responsive"
-              width={200}
-              height={100}
-              className="rounded-t"
-            />
-          </div>
-        </Link>
-      </div>
+      <Link href="/" className="block">
+        <Image
+          src="/banner.png"
+          alt="Banner"
+          layout="responsive"
+          width={200}
+          height={100}
+          className="w-full object-cover"
+        />
+      </Link>
 
       {/* User Info */}
-      <div className="border-b border-b-gray-300 flex flex-col items-center p-2">
-        <div className="flex items-center gap-2 mt-3">
-          {/* Profil fotoğrafı */}
-          <ProfilePhoto src="/logo-2.png" />
-          {/* Kullanıcı adı ve soyadı */}
-          <div>
-            <h1 className="font-bold hover:underline cursor-pointer">
-              {user.user_metadata.firstName} {user.user_metadata.lastName}
-            </h1>
-            <p className="text-xs text-gray-600">
-              @{user.user_metadata.username}
-            </p>
-          </div>
+      <div className="p-4 border-b border-gray-300 flex items-center gap-4">
+        {/* Eğer ProfilePhoto bileşeniniz zaten kendi stilini yönetiyorsa className eklemeyin */}
+        <ProfilePhoto src="/logo-2.png" />
+        <div className="flex flex-col">
+          <h1 className="text-lg font-semibold text-left hover:underline cursor-pointer">
+            {user.user_metadata.firstName} {user.user_metadata.lastName}
+          </h1>
+          <p className="text-sm text-gray-500 text-left">
+            @{user.user_metadata.username}
+          </p>
         </div>
       </div>
 
       {/* Contact Section */}
-      <div className="border-t border-gray-300 p-4 text-right pr-4">
-        <h3 className="font-bold text-xl text-gray-800 mb-4">Contact Us</h3>
-        <div className="space-y-4 text-sm text-gray-700">
-          <div>
+      <div className="p-4">
+        <h3 className="text-base font-bold text-gray-800 mb-2">Contact Us</h3>
+        <ul className="space-y-3 text-sm text-gray-700">
+          <li>
             <strong>Location:</strong>
-            <br />
-            Bahçelievler Mah. Aşkabat Cad,
-            <br />
-            Aşkabat Cd. No:61 Çankaya/Ankara
-          </div>
-          <div>
+            <div className="text-gray-600">
+              Bahçelievler Mah. Aşkabat Cad,
+              <br />
+              Aşkabat Cd. No:61 Çankaya/Ankara
+            </div>
+          </li>
+          <li>
             <strong>Email:</strong>
-            <br />
-            info@drgulf.net
-            <br />
-            cv@drgulf.net
-          </div>
-          <div>
+            <div className="text-gray-600">
+              info@drgulf.net
+              <br />
+              cv@drgulf.net
+            </div>
+          </li>
+          <li>
             <strong>Phone:</strong>
-            <br />
-            +90 850 532 95 25
-            <br />
-            +90 532 151 92 86
-          </div>
-          <div>
-            <strong>WhatsApp:</strong>
-            <br />
-            <a
-              href="https://wa.me/905321519286"
-              target="_blank"
-              className="text-green-600 hover:underline"
-              rel="noreferrer"
-            >
+            <div className="text-gray-600">
+              +90 850 532 95 25
+              <br />
               +90 532 151 92 86
-            </a>
-          </div>
-        </div>
+            </div>
+          </li>
+          <li>
+            <strong>WhatsApp:</strong>
+            <div className="text-gray-600">
+              <a
+                href="https://wa.me/905321519286"
+                target="_blank"
+                className="text-green-600 hover:underline"
+                rel="noreferrer"
+              >
+                +90 532 151 92 86
+              </a>
+            </div>
+          </li>
+        </ul>
       </div>
     </div>
   );
