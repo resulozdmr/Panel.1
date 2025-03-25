@@ -52,40 +52,6 @@ export default async function DashboardPage() {
           </div>
         </div>
       </div>
-
-      {/* MOBİLDE: Sağdaki sabit ikon menüsü */}
-      <div className="fixed right-4 top-1/3 transform -translate-y-1/2 bg-white p-3 shadow-lg rounded-l-lg lg:hidden flex flex-col items-center gap-4">
-        {/* Zoom */}
-        <Link href="/zoom">
-          <Image
-            src="/zoom.png"
-            alt="Zoom Logo"
-            width={40}
-            height={40}
-            className="cursor-pointer"
-          />
-        </Link>
-        {/* Education */}
-        <Link href="/education">
-          <Image
-            src="/FileText.png"
-            alt="Education Logo"
-            width={40}
-            height={40}
-            className="cursor-pointer"
-          />
-        </Link>
-        {/* Calendar */}
-        <Link href="/calendar">
-          <Image
-            src="/calendar.png"
-            alt="Calendar Logo"
-            width={40}
-            height={40}
-            className="cursor-pointer"
-          />
-        </Link>
-      </div>
     </div>
   );
 }

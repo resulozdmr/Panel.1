@@ -42,21 +42,18 @@ export default function Education() {
             href={video.link}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center bg-gray-50 p-2 rounded-md hover:bg-gray-100"
+            className="flex items-center bg-gray-50 p-2 rounded-md hover:bg-gray-100 transition"
           >
             <Image
               src={video.thumbnail}
               alt={video.title}
-              width={48}
-              height={48}
+              width={60}
+              height={60}
               className="rounded-md mr-3"
             />
-            <div>
-              <h1 className="text-sm font-medium text-blue-600">
-                {video.title}
-              </h1>
-              <p className="text-xs text-gray-600">Watch now</p>
-            </div>
+            <h1 className="text-sm font-semibold text-blue-600 hover:underline">
+              {video.title}
+            </h1>
           </a>
         ))}
       </div>
