@@ -3,16 +3,16 @@
 import { useEffect, useState, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
-import Link from "next/link";
 import NavItems from "./NavItems";
 import supabase from "@/lib/supabaseClient";
+import Link from "next/link";
 
 const Navbar = () => {
   const pathname = usePathname();
   const router = useRouter();
   const [userEmail, setUserEmail] = useState<string | null>(null);
-  const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const getSession = async () => {
@@ -26,29 +26,21 @@ const Navbar = () => {
     getSession();
   }, [router]);
 
-  // Dış tıklamaları dinleyerek dropdown'u kapatma
+  // Dışarı tıklanınca dropdown'ı kapat
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
         dropdownRef.current &&
         !dropdownRef.current.contains(event.target as Node)
       ) {
-        setDropdownOpen(false);
+        setShowDropdown(false);
       }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    router.push("/sign-in");
-  };
-
-  // Navbar gizli sayfalar için
   if (
     pathname === "/sign-in" ||
     pathname === "/sign-up" ||
@@ -60,7 +52,7 @@ const Navbar = () => {
   return (
     <div className="fixed w-full bg-white z-50 shadow-sm">
       <div className="flex items-center max-w-6xl justify-between h-16 mx-auto px-3">
-        {/* Sol Kısım - Logo (tıklandığında /dashboard) */}
+        {/* Logo */}
         <div className="flex items-center gap-2">
           <Link href="/dashboard">
             <Image
@@ -74,37 +66,39 @@ const Navbar = () => {
         </div>
 
         <div className="flex items-center gap-5">
-          {/* Masaüstünde NavItems gösteriliyor */}
           <div className="md:block hidden">
             <NavItems />
           </div>
 
-          {/* Sağ Kısım - Profil İkonu */}
+          {/* Kullanıcı Bilgisi + Açılır Menü */}
           {userEmail && (
-            <div className="relative" ref={dropdownRef}>
-              <button
-                onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="focus:outline-none"
-              >
+            <div
+              className="relative flex flex-col items-center text-xs text-black font-semibold cursor-pointer"
+              onClick={() => setShowDropdown(!showDropdown)}
+              ref={dropdownRef}
+            >
                 <Image
                   src="/logo-2.png"
-                  alt="Profile Icon"
+                  alt="Profile"
                   width={36}
                   height={36}
-                  className="cursor-pointer rounded-full"
+                  className="rounded-full"
                 />
-              </button>
-              {dropdownOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg z-50">
-                  <Link
-                    href="/profile-settings"
-                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                  >
-                    Profile Settings
+
+              
+              <span className="mt-1">Profile</span>
+
+              {showDropdown && (
+                <div className="absolute top-12 right-0 bg-white shadow-md rounded-md p-2 text-sm w-40 z-50">
+                  <Link href="/profile">
+                    <div className="py-2 px-3 hover:bg-gray-100 rounded">Profile Settings</div>
                   </Link>
                   <button
-                    onClick={handleLogout}
-                    className="w-full text-left block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                    onClick={async () => {
+                      await supabase.auth.signOut();
+                      router.push("/sign-in");
+                    }}
+                    className="py-2 px-3 text-red-500 hover:bg-gray-100 w-full text-left rounded"
                   >
                     Logout
                   </button>
