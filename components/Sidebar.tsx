@@ -26,12 +26,13 @@ const Sidebar = async ({ user }: Props) => {
   }
 
   return (
-    <div className="hidden md:block w-[20%] h-fit border border-gray-300 bg-white rounded-lg">
-      <div className="flex relative flex-col items-center">
+    <div className="hidden md:block w-[20%] border border-gray-300 bg-white rounded-lg">
+      {/* Banner */}
+      <div className="flex flex-col items-center">
         <Link href="/">
           <div className="w-full h-auto overflow-hidden cursor-pointer">
             <Image
-              src={"/banner.png"}
+              src="/banner.png"
               alt="Banner"
               layout="responsive"
               width={200}
@@ -40,19 +41,19 @@ const Sidebar = async ({ user }: Props) => {
             />
           </div>
         </Link>
+      </div>
 
-        {/* Profile Photo */}
-        <div className="my-1 absolute top-10 left-[40%]">
-          <ProfilePhoto src={`/avatar.png`} />
-        </div>
-
-        {/* User Info */}
-        <div className="border-b border-b-gray-300">
-          <div className="p-2 mt-5 text-center">
+      {/* User Info */}
+      <div className="border-b border-b-gray-300 flex flex-col items-center p-2">
+        <div className="flex items-center gap-2 mt-3">
+          {/* Profil fotoğrafı */}
+          <ProfilePhoto src="/avatar.png" />
+          {/* Kullanıcı adı ve soyadı */}
+          <div>
             <h1 className="font-bold hover:underline cursor-pointer">
               {user.user_metadata.firstName} {user.user_metadata.lastName}
             </h1>
-            <p className="text-xs">@{user.user_metadata.username}</p>
+            <p className="text-xs text-gray-600">@{user.user_metadata.username}</p>
           </div>
         </div>
       </div>
@@ -62,23 +63,35 @@ const Sidebar = async ({ user }: Props) => {
         <h3 className="font-bold text-xl text-gray-800 mb-4">Contact Us</h3>
         <div className="space-y-4 text-sm text-gray-700">
           <div>
-            <strong>Location:</strong><br />
-            Bahçelievler Mah. Aşkabat Cad,<br />
+            <strong>Location:</strong>
+            <br />
+            Bahçelievler Mah. Aşkabat Cad,
+            <br />
             Aşkabat Cd. No:61 Çankaya/Ankara
           </div>
           <div>
-            <strong>Email:</strong><br />
-            info@drgulf.net<br />
+            <strong>Email:</strong>
+            <br />
+            info@drgulf.net
+            <br />
             cv@drgulf.net
           </div>
           <div>
-            <strong>Phone:</strong><br />
-            +90 850 532 95 25<br />
+            <strong>Phone:</strong>
+            <br />
+            +90 850 532 95 25
+            <br />
             +90 532 151 92 86
           </div>
           <div>
-            <strong>WhatsApp:</strong><br />
-            <a href="https://wa.me/905321519286" target="_blank" className="text-green-600 hover:underline">
+            <strong>WhatsApp:</strong>
+            <br />
+            <a
+              href="https://wa.me/905321519286"
+              target="_blank"
+              className="text-green-600 hover:underline"
+              rel="noreferrer"
+            >
               +90 532 151 92 86
             </a>
           </div>

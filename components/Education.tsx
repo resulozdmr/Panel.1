@@ -1,33 +1,33 @@
-import { Info } from 'lucide-react';
-import React from 'react';
-import Image from 'next/image';
+import { Info } from "lucide-react";
+import React from "react";
+import Image from "next/image";
 
 const videoLinks = [
   {
     title: "How to Build a Startup",
-    link: "https://www.youtube.com/watch?v=rjk0NvFpM8s",
-    thumbnail: "https://img.youtube.com/vi/rjk0NvFpM8s/hqdefault.jpg",
+    link: "https://www.youtube.com/watch?v=9b5A0VUBOz4", // Gerçek video linki
+    thumbnail: "https://img.youtube.com/vi/9b5A0VUBOz4/hqdefault.jpg", // Gerçek video ID
   },
   {
     title: "The Future of Transportation",
-    link: "https://www.youtube.com/watch?v=Bb3tqaPHWbY",
-    thumbnail: "https://img.youtube.com/vi/Bb3tqaPHWbY/hqdefault.jpg",
+    link: "https://www.youtube.com/watch?v=Eemz1RrAHXw",
+    thumbnail: "https://img.youtube.com/vi/Eemz1RrAHXw/hqdefault.jpg",
   },
   {
     title: "AI in Healthcare",
-    link: "https://www.youtube.com/watch?v=nsGziOqtBwE",
-    thumbnail: "https://img.youtube.com/vi/nsGziOqtBwE/hqdefault.jpg",
+    link: "https://www.youtube.com/watch?v=7uK30Slhhkg",
+    thumbnail: "https://img.youtube.com/vi/7uK30Slhhkg/hqdefault.jpg",
   },
   {
     title: "Exploring Space Innovations",
-    link: "https://www.youtube.com/watch?v=IBRKAF7keng",
-    thumbnail: "https://img.youtube.com/vi/IBRKAF7keng/hqdefault.jpg",
+    link: "https://www.youtube.com/watch?v=gIc3lK5mepY",
+    thumbnail: "https://img.youtube.com/vi/gIc3lK5mepY/hqdefault.jpg",
   },
 ];
 
 const Education = () => {
   return (
-    <div className="hidden md:block w-[22%] bg-white h-fit rounded-lg border border-gray-300 fixed right-8 top-20 shadow-md">
+    <div className="hidden md:block w-[22%] bg-white h-fit rounded-lg border border-gray-300 shadow-md">
       {/* Header */}
       <div className="flex items-center justify-between p-3 border-b border-gray-200">
         <h2 className="text-md font-medium">Education</h2>

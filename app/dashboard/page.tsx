@@ -24,19 +24,19 @@ export default async function DashboardPage() {
   };
 
   return (
-    <div className="pt-20 min-h-screen overflow-y-auto bg-[#F4F2EE]">
+    <div className="pt-20 h-screen overflow-y-auto bg-[#F4F2EE]">
       <div className="max-w-6xl mx-auto flex justify-between gap-8 px-4 pb-10">
-        {/* Sidebar */}
+        {/* Sol Sidebar */}
         <Sidebar user={user} />
 
-        {/* Feed */}
+        {/* Orta alan - Feed */}
         <Feed user={user} />
 
-        {/* News */}
-        <News />
-
-        {/* Education */}
-        <Education />
+        {/* Sağ alan - News + Education */}
+        <div className="flex flex-col gap-6">
+          <News />
+          <Education />
+        </div>
       </div>
     </div>
   );
