@@ -69,21 +69,23 @@ export function PostDialog({
       <DialogContent
         className="sm:max-w-[425px] bg-white rounded-md shadow-lg"
       >
-        <DialogHeader>
-          <DialogTitle className="flex gap-2 items-center">
-            <Image
-              src="/logo.png"
-              alt="DrGulf Logo"
-              width={40}
-              height={40}
-              className="rounded-full"
-            />
-            <div>
-              <h1 className="font-semibold text-sm">DrGulf</h1>
-              <p className="text-xs text-gray-500">Post to your network</p>
-            </div>
-          </DialogTitle>
-        </DialogHeader>
+            <DialogHeader>
+            <DialogTitle className="flex items-center gap-3">
+                <div className="w-10 h-10 relative">
+                <Image
+                    src="/logo.png"
+                    alt="DrGulf Logo"
+                    fill
+                    className="rounded-full object-cover"
+                />
+                </div>
+                <div className="leading-tight">
+                <h1 className="font-semibold text-sm">DrGulf</h1>
+                <p className="text-xs text-gray-500">Post to your network</p>
+                </div>
+            </DialogTitle>
+            </DialogHeader>
+
 
         <form
           onSubmit={(e) => {

@@ -24,13 +24,13 @@ export default function FloatingMenu() {
         className="relative bg-white p-3 shadow-xl rounded-l-xl w-16 flex flex-col gap-4 items-center"
       >
         <Link href="/zoom">
-          <Image src="/zoom.png" alt="Zoom" width={32} height={32} />
+          <Image src="/zoom.png" alt="Zoom" width={40} height={40} />
         </Link>
         <Link href="/education">
-          <Image src="/FileText.png" alt="Education" width={28} height={28} />
+          <Image src="/FileText.png" alt="Education" width={37} height={37} />
         </Link>
         <Link href="/calendar">
-          <Image src="/calendar.png" alt="Calendar" width={28} height={28} />
+          <Image src="/calendar.png" alt="Calendar" width={37} height={37} />
         </Link>
 
         {/* Menü açıkken kapanma butonu */}

@@ -35,6 +35,19 @@ const navItems: NAVITEMS[] = [
       />
     ),
     text: "Education",
+  },  
+  {
+    src: "/calendar",
+    icon: (
+      <Image
+        src="/calendar.png"  // Custom Image Icon
+        alt="calendar Logo"
+        width={25}
+        height={17}
+        className="rounded-md cursor-pointer"
+      />
+    ),
+    text: "Calendar",
   },
   {
     src: "#", // No navigation, uses onClick instead
