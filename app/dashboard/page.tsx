@@ -8,20 +8,34 @@ import { cookies } from "next/headers";
 export default async function DashboardPage() {
   const supabase = createServerComponentClient({ cookies });
 
-  // Session'ı al ama zorunlu değil
   const {
     data: { session },
   } = await supabase.auth.getSession();
 
-  // Kullanıcı varsa onu al, yoksa anonim kullanıcı geç
-  const user = session?.user ?? { email: "anonymous@drgulf.net", id: "guest" };
+  // Test için oturum kontrolünü geçici olarak devre dışı bırakabilirsin
+  const user = {
+    id: session?.user?.id || "guest",
+    email: session?.user?.email || "guest@drgulf.net",
+    user_metadata: {
+      firstName: session?.user?.user_metadata?.firstName || "Guest",
+      lastName: session?.user?.user_metadata?.lastName || "User",
+      username: session?.user?.user_metadata?.username || "guestuser",
+    },
+  };
 
   return (
-    <div className="pt-20">
-      <div className="max-w-6xl mx-auto flex justify-between gap-8">
+    <div className="pt-20 min-h-screen overflow-y-auto bg-[#F4F2EE]">
+      <div className="max-w-6xl mx-auto flex justify-between gap-8 px-4 pb-10">
+        {/* Sidebar */}
         <Sidebar user={user} />
+
+        {/* Feed */}
         <Feed user={user} />
+
+        {/* News */}
         <News />
+
+        {/* Education */}
         <Education />
       </div>
     </div>
