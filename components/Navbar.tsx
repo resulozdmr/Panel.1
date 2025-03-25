@@ -11,8 +11,6 @@ const Navbar = () => {
   const pathname = usePathname();
   const router = useRouter();
   const [userEmail, setUserEmail] = useState<string | null>(null);
-  const [showDropdown, setShowDropdown] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const getSession = async () => {
@@ -26,21 +24,7 @@ const Navbar = () => {
     getSession();
   }, [router]);
 
-  // Dışarı tıklanınca dropdown'ı kapat
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setShowDropdown(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
+  // Navbar gizli sayfalar için
   if (
     pathname === "/sign-in" ||
     pathname === "/sign-up" ||
@@ -52,7 +36,7 @@ const Navbar = () => {
   return (
     <div className="fixed w-full bg-white z-50 shadow-sm">
       <div className="flex items-center max-w-6xl justify-between h-16 mx-auto px-3">
-        {/* Logo */}
+        {/* Sol Kısım - Logo (tıklandığında /dashboard) */}
         <div className="flex items-center gap-2">
           <Link href="/dashboard">
             <Image
@@ -66,44 +50,23 @@ const Navbar = () => {
         </div>
 
         <div className="flex items-center gap-5">
+          {/* Masaüstünde NavItems gösteriliyor */}
           <div className="md:block hidden">
             <NavItems />
           </div>
 
-          {/* Kullanıcı Bilgisi + Açılır Menü */}
+          {/* Sağ Kısım - Artık kullanıcı profil dropdown'u yerine de logomuzu gösteriyoruz */}
           {userEmail && (
-            <div
-              className="relative flex flex-col items-center text-xs text-black font-semibold cursor-pointer"
-              onClick={() => setShowDropdown(!showDropdown)}
-              ref={dropdownRef}
-            >
+            <div className="flex items-center">
+              <Link href="/dashboard">
                 <Image
-                  src="/logo-2.png"
-                  alt="Profile"
+                  src="/logo.png"
+                  alt="Logo"
                   width={36}
                   height={36}
-                  className="rounded-full"
+                  className="cursor-pointer"
                 />
-
-              
-              <span className="mt-1">Profile</span>
-
-              {showDropdown && (
-                <div className="absolute top-12 right-0 bg-white shadow-md rounded-md p-2 text-sm w-40 z-50">
-                  <Link href="/profile">
-                    <div className="py-2 px-3 hover:bg-gray-100 rounded">Profile Settings</div>
-                  </Link>
-                  <button
-                    onClick={async () => {
-                      await supabase.auth.signOut();
-                      router.push("/sign-in");
-                    }}
-                    className="py-2 px-3 text-red-500 hover:bg-gray-100 w-full text-left rounded"
-                  >
-                    Logout
-                  </button>
-                </div>
-              )}
+              </Link>
             </div>
           )}
         </div>

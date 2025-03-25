@@ -47,7 +47,7 @@ const Sidebar = async ({ user }: Props) => {
       <div className="border-b border-b-gray-300 flex flex-col items-center p-2">
         <div className="flex items-center gap-2 mt-3">
           {/* Profil fotoğrafı */}
-          <ProfilePhoto src="/avatar.png" />
+          <ProfilePhoto src="/logo-2.png" />
           {/* Kullanıcı adı ve soyadı */}
           <div>
             <h1 className="font-bold hover:underline cursor-pointer">

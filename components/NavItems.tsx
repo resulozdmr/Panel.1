@@ -1,4 +1,4 @@
-import { Home, FileText } from 'lucide-react';
+import { Home } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
 import Image from 'next/image';
@@ -14,34 +14,32 @@ interface NAVITEMS {
 }
 
 const openZoomApp = () => {
-  window.open("zoommtg://zoom.us/start", "_blank"); // ✅ Opens Zoom application
+  window.open("zoommtg://zoom.us/start", "_blank"); // Opens Zoom application
 };
 
 const navItems: NAVITEMS[] = [
   {
     src: "/dashboard",
-    icon: <Home />,
+    icon: <Home className="w-6 h-6" />,
     text: "Home",
   },
   {
     src: "/education",
     icon: (
-      <Link href="/education" passHref>
-        <Image
-          src="/FileText.png"  // Custom Image Icon
-          alt="Education Logo"
-          width={25}
-          height={17}
-          className="rounded-md cursor-pointer"
-        />
-      </Link>
+      <Image
+        src="/FileText.png"  // Custom Image Icon
+        alt="Education Logo"
+        width={25}
+        height={17}
+        className="rounded-md cursor-pointer"
+      />
     ),
     text: "Education",
-},
+  },
   {
-    src: "#", // Prevent navigation, using onClick instead
+    src: "#", // No navigation, uses onClick instead
     icon: (
-      <div className="flex items-center justify-center h-full" onClick={openZoomApp}> {/* ✅ Centered vertically and horizontally */}
+      <div className="flex items-center justify-center h-full" onClick={openZoomApp}>
         <Image
           src={zoomLogo}
           alt="Zoom Logo"
@@ -56,17 +54,26 @@ const navItems: NAVITEMS[] = [
 
 const NavItems = () => {
   return (
-    <div className="flex flex-wrap gap-4 items-center justify-center p-2 md:gap-8"> {/* ✅ Responsive for mobile */}
-      {navItems.map((navItem, index) => (
-        <Link key={index} href={navItem.src} passHref>
-          <div className="flex flex-col items-center cursor-pointer text-[#666666] hover:text-black">
-            <span>{navItem.icon}</span>
-            {navItem.text && (
-              <span className="text-xs mt-1">{navItem.text}</span> // ✅ Text under the icon
-            )}
-          </div>
-        </Link>
-      ))}
+    <div className="flex flex-wrap gap-4 items-center justify-center p-2 md:gap-8">
+      {navItems.map((navItem, index) => {
+        // Zoom item (src === "#") render without Link wrapper
+        if (navItem.src === "#") {
+          return (
+            <div key={index} className="flex flex-col items-center cursor-pointer text-[#666666] hover:text-black">
+              <span>{navItem.icon}</span>
+              {navItem.text && <span className="text-xs mt-1">{navItem.text}</span>}
+            </div>
+          );
+        }
+        return (
+          <Link key={index} href={navItem.src} passHref>
+            <div className="flex flex-col items-center cursor-pointer text-[#666666] hover:text-black">
+              <span>{navItem.icon}</span>
+              {navItem.text && <span className="text-xs mt-1">{navItem.text}</span>}
+            </div>
+          </Link>
+        );
+      })}
     </div>
   );
 };
