@@ -26,7 +26,7 @@ const Sidebar = async ({ user }: Props) => {
   }
 
   return (
-    <div className="hidden md:block w-[20%] border border-gray-300 bg-white rounded-lg">
+    <div className="w-full border border-gray-300 bg-white rounded-lg">
       {/* Banner */}
       <div className="flex flex-col items-center">
         <Link href="/">
