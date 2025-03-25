@@ -27,7 +27,7 @@ const videoLinks = [
 
 export default function Education() {
   return (
-    <div className="ml-4">
+    <div className="ml-4 mt-4">
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-md font-medium">Education</h2>
@@ -52,7 +52,9 @@ export default function Education() {
               className="rounded-md mr-3"
             />
             <div>
-              <h1 className="text-sm font-medium text-blue-600">{video.title}</h1>
+              <h1 className="text-sm font-medium text-blue-600">
+                {video.title}
+              </h1>
               <p className="text-xs text-gray-600">Watch now</p>
             </div>
           </a>
